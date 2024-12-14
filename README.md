@@ -1,0 +1,1 @@
+This is a hospital management system built using the Django framework.
