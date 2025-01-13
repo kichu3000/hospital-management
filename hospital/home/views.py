@@ -56,27 +56,6 @@ def signup_view(request):
     return render(request, 'signup.html')
 
 
-# def login_view(request):
-#     if request.method == 'POST':
-#         email = request.POST.get('email')
-#         password = request.POST.get('password')
-
-#         # Check if the user exists
-#         user = User.objects.filter(email=email).first()
-#         if user is None:
-#             messages.error(request, "User not found. Please sign up.")
-#             return render(request, 'login.html')
-
-#         # Check if the password is correct
-#         if user.password != password:
-#             messages.error(request, "Incorrect password.")
-#             return render(request, 'login.html')
-
-#         # Log in the user
-#         request.session['user_id'] = user.id
-#         messages.success(request, "Login successful!")
-#         return redirect('home')
-#     return render(request,'login.html')
 
 def login_view(request):
     if request.method == 'POST':
@@ -87,15 +66,15 @@ def login_view(request):
         try:
             # Find the user by email
             user = User.objects.get(email=email)
-            print(user.email)
-            print(user.password)
+            # print(user.email)
+            # print(user.password)
         except User.DoesNotExist:
             user = None
 
         if user is not None and user.password == password:
-            print(user.password)
+            # print(user.password)
             # Login the user
-            #login(request, user)
+            login(request, user)
             messages.success(request, "Login successful!")
             return redirect('dashboard')  # Redirect to dashboard or home page
         else:
