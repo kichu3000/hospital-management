@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .form-control{
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #00c6a9;
+    height: 45px;
+    outline: none;
+    box-shadow: none;
+    border-radius: 5px;
+    padding: 0 15px;
+  
+    &::placeholder {
+      color: $primary1;
+    }
+  }
+  button.btn {
+    background-color: #252525;
+    color: #ffffff;
+    padding: 10px 45px;
+    border-radius: 5px;
+    margin-top: 10px;
+    text-transform: uppercase;
+  }
+  .btn:hover {
+    background-color: #00c6a9; /* Change the background color on hover */
+    color: #252525; /* Change the text color when hovered */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+  }
+  </style>
+
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
+
+<div class="container d-flex justify-content-center" style="min-height: 100vh;">
+  <div class="form-wrapper book-form mt-5">
+    <h4>
+      <span class="underline">SIGN UP</span>
+    </h4>
+    <form method="post" action="{% url 'signup' %}">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="name">Name:</label>
+          <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="email">Email:</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="phone">Phone:</label>
+          <input type="text" class="form-control" id="phone" name="phone" required>
+        </div>
+        
+        <div class="form-group col-md-6">
+          <label for="password1">Password:</label>
+          <input type="password" class="form-control" id="password1" name="password1" required>
+        </div>
+
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="blood_group">Blood Group:</label>
+          <input type="text" class="form-control" id="blood_group" name="blood_group" required>
+        </div>
+        
+      <div class="form-group col-md-6">
+          <label for="password2">Confirm Password:</label>
+          <input type="password" class="form-control" id="password2" name="password2" required>
+        </div>
+
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="user_type">I am a:</label>
+          <select class="form-control" id="user_type" name="user_type" required>
+            <option value="patient">Patient</option>
+            <option value="doctor">Doctor</option>
+          </select>
+        </div>
+      
+        <div class="form-group col-md-6" id="specialization-row" style="display: none;">
+            <label for="specialization">Specialization:</label>
+            <select class="form-control" id="specialization" name="specialization">
+              <option value="cardiologist">Cardiologist</option>
+              <option value="neurologist">Neurologist</option>
+              <option value="orthopedic">Orthopedic</option>
+              <option value="dermatologist">Dermatologist</option>
+              <option value="gynecologist">Gynecologist</option>
+              <option value="pediatrician">Pediatrician</option>
+              <option value="psychiatrist">Psychiatrist</option>
+              <option value="radiologist">Radiologist</option>
+              <option value="anesthesiologist">Anesthesiologist</option>
+              <option value="oncologist">Oncologist</option>
+              <option value="urologist">Urologist</option>
+              <option value="endocrinologist">Endocrinologist</option>
+              <option value="gastroenterologist">Gastroenterologist</option>
+              <option value="hematologist">Hematologist</option>
+              <option value="nephrologist">Nephrologist</option>
+              <option value="rheumatologist">Rheumatologist</option>
+              <option value="allergist">Allergist/Immunologist</option>
+              <option value="general_surgeon">General Surgeon</option>
+              <option value="plastic_surgeon">Plastic Surgeon</option>
+              <option value="vascular_surgeon">Vascular Surgeon</option>
+              <option value="thoracic_surgeon">Thoracic Surgeon</option>
+              <option value="ophthalmologist">Ophthalmologist</option>
+              <option value="otolaryngologist">Otolaryngologist (ENT Specialist)</option>
+              <option value="dentist">Dentist</option>
+              <option value="pathologist">Pathologist</option>
+              <option value="family_physician">Family Physician</option>
+              <option value="internal_medicine">Internal Medicine Specialist</option>
+                <!-- Add more specializations as needed -->
+            </select>
+        </div>
+    </div>
+
+
+      <div class="form-row">
+        <div class="btn-box">
+          <button type="submit" class="btn btn mt-4 button.btn">Sign Up</button>
+        </div>
+      
+        <div class="form-group col-md-6 mt-4">
+          Already have an account? <a href="{% url 'login' %}">Login</a>
+        </div>
+      </div>
+      
+      
+    </form>
+  </div>
+</div>
+
+<!-- Function for handing the Doctor specialization option to be visible or not -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      var userType = document.getElementById('user_type');
+      var specializationRow = document.getElementById('specialization-row');
+      
+      // Add event listener to the user_type select field
+      userType.addEventListener('change', function () {
+          if (userType.value === 'doctor') {
+              specializationRow.style.display = 'block';
+          } else {
+              specializationRow.style.display = 'none';
+          }
+      });
+
+      // Trigger the function on page load to handle pre-selected values (if any)
+      if (userType.value === 'doctor') {
+          specializationRow.style.display = 'block';
+      } else {
+          specializationRow.style.display = 'none';
+      }
+  });
+</script>
+
+
+{% endblock %}

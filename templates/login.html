@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .form-control {
+    width: 100%;
+    background-color: transparent;
+    border: 1px solid #00c6a9;
+    height: 45px;
+    outline: none;
+    box-shadow: none;
+    border-radius: 5px;
+    padding: 0 15px;
+  }
+
+  .form-control::placeholder {
+    color: #00c6a9;  /* Placeholder text color */
+  }
+
+  .form-wrapper {
+    max-width: 400px; /* Controls the width of the form */
+    margin: 0 auto;   /* Centers the form horizontally */
+  }
+
+  .btn {
+    background-color: #252525;
+    color: #ffffff;
+    padding: 10px 45px;
+    border-radius: 5px;
+    text-transform: uppercase;
+    width: 100%; /* Makes the button take the same width as the input fields */
+    border: none; /* Optional: removes button border */
+  }
+
+  .btn:hover {
+    background-color: #00c6a9; /* Change the background color on hover */
+    color: #252525; /* Change the text color when hovered */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  /* Remove any bottom margin after the button */
+  .btn-box {
+    margin-bottom: 0;
+  }
+</style>
+
+{% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+<div class="container d-flex justify-content-center" style="min-height: 70vh;">
+  <div class="form-wrapper book-form mt-5">
+    <h4>
+      <span class="underline mt-5">LOGIN</span>
+    </h4>
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <div class="form-row g-3">
+        <div class="form-group col-md-12">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+      </div>
+      <div class="form-row g-3">
+        <div class="form-group col-md-12">
+          <label for="password">Password</label>
+          <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+      </div>
+      <div class="btn-box">
+        <button type="submit" class="btn btn-primary">Login</button>
+      </div>
+      <div class="btn-box mt-3">
+       Don't have an account? <a href="{% url 'signup' %}">Register</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
