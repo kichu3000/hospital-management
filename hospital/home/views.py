@@ -24,6 +24,8 @@ def signup_view(request):
         password2 = request.POST.get('password2')
         blood_group = request.POST.get('blood_group')
         user_type = request.POST.get('user_type')
+        specialization = request.POST.get('specialization') # Only for doctors
+
 
         # Validate password confirmation
         if password1 != password2:
@@ -39,6 +41,7 @@ def signup_view(request):
                 phone=phone,
                 password=password1,  # In production, store hashed passwords
                 blood_group=blood_group,
+                specialization=specialization,
                 user_type=user_type
             )
             messages.success(request, "Sign-up successful!")
@@ -66,7 +69,7 @@ def login_view(request):
         try:
             # Find the user by email
             user = User.objects.get(email=email)
-            # print(user.email)
+            print(user)
             # print(user.password)
         except User.DoesNotExist:
             user = None

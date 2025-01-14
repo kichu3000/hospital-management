@@ -29,6 +29,7 @@ class User(AbstractBaseUser):
     password = models.CharField(max_length=100)  # It will still store the password, but we will hash it
     blood_group = models.CharField(max_length=3)
     user_type = models.CharField(max_length=7, choices=USER_TYPE_CHOICES)
+    specialization = models.CharField(max_length=100, blank=True, null=True)
     last_login = models.DateTimeField(auto_now=True)  # Automatically set to the current time on login
     is_staff = models.BooleanField(default=False)  # Used to check if the user has admin rights
     is_active = models.BooleanField(default=True)  # To handle account activation

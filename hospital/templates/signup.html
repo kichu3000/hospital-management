@@ -95,13 +95,81 @@
             <option value="doctor">Doctor</option>
           </select>
         </div>
-      </div>
-      <div class="btn-box">
-        <button type="submit" class="btn btn mt-4 button.btn">Sign Up</button>
+      
+        <div class="form-group col-md-6" id="specialization-row" style="display: none;">
+            <label for="specialization">Specialization:</label>
+            <select class="form-control" id="specialization" name="specialization">
+              <option value="cardiologist">Cardiologist</option>
+              <option value="neurologist">Neurologist</option>
+              <option value="orthopedic">Orthopedic</option>
+              <option value="dermatologist">Dermatologist</option>
+              <option value="gynecologist">Gynecologist</option>
+              <option value="pediatrician">Pediatrician</option>
+              <option value="psychiatrist">Psychiatrist</option>
+              <option value="radiologist">Radiologist</option>
+              <option value="anesthesiologist">Anesthesiologist</option>
+              <option value="oncologist">Oncologist</option>
+              <option value="urologist">Urologist</option>
+              <option value="endocrinologist">Endocrinologist</option>
+              <option value="gastroenterologist">Gastroenterologist</option>
+              <option value="hematologist">Hematologist</option>
+              <option value="nephrologist">Nephrologist</option>
+              <option value="rheumatologist">Rheumatologist</option>
+              <option value="allergist">Allergist/Immunologist</option>
+              <option value="general_surgeon">General Surgeon</option>
+              <option value="plastic_surgeon">Plastic Surgeon</option>
+              <option value="vascular_surgeon">Vascular Surgeon</option>
+              <option value="thoracic_surgeon">Thoracic Surgeon</option>
+              <option value="ophthalmologist">Ophthalmologist</option>
+              <option value="otolaryngologist">Otolaryngologist (ENT Specialist)</option>
+              <option value="dentist">Dentist</option>
+              <option value="pathologist">Pathologist</option>
+              <option value="family_physician">Family Physician</option>
+              <option value="internal_medicine">Internal Medicine Specialist</option>
+                <!-- Add more specializations as needed -->
+            </select>
+        </div>
+    </div>
+
+
+      <div class="form-row">
+        <div class="btn-box">
+          <button type="submit" class="btn btn mt-4 button.btn">Sign Up</button>
+        </div>
+      
+        <div class="form-group col-md-6 mt-4">
+          Already have an account? <a href="{% url 'login' %}">Login</a>
+        </div>
       </div>
       
       
     </form>
   </div>
 </div>
+
+<!-- Function for handing the Doctor specialization option to be visible or not -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      var userType = document.getElementById('user_type');
+      var specializationRow = document.getElementById('specialization-row');
+      
+      // Add event listener to the user_type select field
+      userType.addEventListener('change', function () {
+          if (userType.value === 'doctor') {
+              specializationRow.style.display = 'block';
+          } else {
+              specializationRow.style.display = 'none';
+          }
+      });
+
+      // Trigger the function on page load to handle pre-selected values (if any)
+      if (userType.value === 'doctor') {
+          specializationRow.style.display = 'block';
+      } else {
+          specializationRow.style.display = 'none';
+      }
+  });
+</script>
+
+
 {% endblock %}
