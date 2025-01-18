@@ -7,54 +7,65 @@
 
   <!-- book section -->
 
+  {% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
   <section class="book_section layout_padding">
     <div class="container">
       <div class="row">
         <div class="col">
-          <form>
+          <form method="post" action="{% url 'book_appointment' %}">
+            {% csrf_token %}
             <h4>
               BOOK <span>APPOINTMENT</span>
             </h4>
             <div class="form-row ">
               <div class="form-group col-lg-4">
-                <label for="inputPatientName">Patient Name </label>
-                <input type="text" class="form-control" id="inputPatientName" placeholder="">
-              </div>
+                <label for="patient_name">Patient Name </label>
+                <input type="text" class="form-control" id="patient_name" name="patient_name" placeholder="">
+              </div>              
               <div class="form-group col-lg-4">
                 <label for="inputDoctorName">Doctor's Name</label>
-                <select name="" class="form-control wide" id="inputDoctorName">
-                  <option value="Normal distribution ">Normal distribution </option>
-                  <option value="Normal distribution ">Normal distribution </option>
-                  <option value="Normal distribution ">Normal distribution </option>
+                <select class="form-control" id="inputDoctorName" name="doctor">
+                  <option value="" disabled selected>Select a doctor</option>
+                  {% if doctors %}
+                    {% for doc in doctors %}
+                      <option value="{{ doc.name }}">{{ doc.name }}</option>
+                    {% endfor %}
+                  {% else %}
+                    <option value="" disabled>No doctors available</option>
+                  {% endif %}
                 </select>
               </div>
               <div class="form-group col-lg-4">
-                <label for="inputDepartmentName">Department's Name</label>
-                <select name="" class="form-control wide" id="inputDepartmentName">
-                  <option value="Normal distribution ">Normal distribution </option>
-                  <option value="Normal distribution ">Normal distribution </option>
-                  <option value="Normal distribution ">Normal distribution </option>
-                </select>
+                <label for="patient_email">Email</label>
+                <input type="email" class="form-control" id="patient_email" name="patient_email" placeholder="">
               </div>
             </div>
             <div class="form-row ">
               <div class="form-group col-lg-4">
-                <label for="inputPhone">Phone Number</label>
-                <input type="number" class="form-control" id="inputPhone" placeholder="XXXXXXXXXX">
+                <label for="patient_phone">Phone Number</label>
+                <input type="number" class="form-control" id="patient_phone" name="patient_phone" placeholder="XXXXXXXXXX">
               </div>
               <div class="form-group col-lg-4">
-                <label for="inputSymptoms">Symptoms</label>
-                <input type="text" class="form-control" id="inputSymptoms" placeholder="">
+                <label for="symptoms">Symptoms</label>
+                <input type="text" class="form-control" id="symptoms" name="symptoms" placeholder="">
               </div>
               <div class="form-group col-lg-4">
-                <label for="inputDate">Choose Date </label>
-                <div class="input-group date" id="inputDate" data-date-format="mm-dd-yyyy">
-                  <input type="text" class="form-control" readonly>
-                  <span class="input-group-addon date_icon">
-                    <i class="fa fa-calendar" aria-hidden="true"></i>
-                  </span>
-                </div>
-              </div>
+                <label for="inputDate">Choose Date</label>
+                <input type="date" class="form-control" id="input_Date" name="date" required>
+            </div>
+            
             </div>
             <div class="btn-box">
               <button type="submit" class="btn ">Submit Now</button>

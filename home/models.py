@@ -51,3 +51,16 @@ class User(AbstractBaseUser):
 
     def check_password(self, raw_password):
         return check_password(raw_password, self.password)  # Check if the password matches the hashed password
+
+
+
+class appointment(models.Model):
+    patient_name = models.CharField(max_length=255)
+    doctor_name = models.CharField(max_length=255,default='Unknown Doctor') 
+    date = models.DateField()
+    email = models.EmailField()
+    phone = models.CharField(max_length=15)
+    Symptoms = models.TextField()
+
+    def __str__(self):
+        return f'{self.patient_name} - {self.doctor_name} on {self.date}'

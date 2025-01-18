@@ -1,0 +1,36 @@
+<!-- filepath: /f:/Major Project/hospital/templates/doctors.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<section class="doctors_section layout_padding">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2>Available Doctors</h2>
+                <table class="table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Specialization</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for doctor in doctors %}
+                            <tr>
+                                <td>{{ doctor.name }}</td>
+                                <td>{{ doctor.email }}</td>
+                                <td>{{ doctor.phone }}</td>
+                                <td>{{ doctor.specialization }}</td>
+                                <td>{% if doctor.is_active %}Available{% else %}Not Available{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
