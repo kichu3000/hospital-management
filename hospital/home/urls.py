@@ -6,5 +6,6 @@ urlpatterns = [
     path('signup/',views.signup_view,name='signup'),
     path('login/',views.login_view,name='login'),
     path('dashboard/',views.dashboard,name='dashboard'),#not created yet
+    path('doctors/',views.doctor,name='doctors'),
     
 ]

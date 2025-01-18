@@ -75,7 +75,7 @@
                     <a class="nav-link" href="treatment.html">Treatment</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="doctor.html">Doctors</a>
+                    <a class="nav-link" href="{% url 'doctors' %}">Doctors</a>
                   </li>
                   <li class="nav-item">
                     <a class="nav-link" href="testimonial.html">Testimonial</a>
@@ -161,7 +161,7 @@
                 Useful link
               </h5>
               <div class="info_links_menu">
-                <a class="active" href="index.html">
+                <a class="active" href="{% url 'book_appointment' %}">
                   Home
                 </a>
                 <a href="about.html">
@@ -170,7 +170,7 @@
                 <a href="treatment.html">
                   Treatment
                 </a>
-                <a href="doctor.html">
+                <a href="{% url 'doctors' %}">
                   Doctors
                 </a>
                 <a href="testimonial.html">

@@ -4,7 +4,6 @@ from django.contrib import messages  # For user feedback
 from django.db import IntegrityError  # For database errors
 
 from django.contrib.auth import authenticate, login
-from django.contrib import messages
 from .models import User, appointment
 
 # Create your views here.
@@ -104,11 +103,6 @@ def get_doctors():
 
 
 
-#This function is for appoinment booking
-from django.shortcuts import redirect
-from django.contrib import messages
-from .models import appointment, User
-
 def book_appointment(request):
     doctors = get_doctors()  # Get the list of doctors
     if request.method == 'POST':
@@ -156,3 +150,8 @@ def book_appointment(request):
             return redirect('book_appointment')  # Redirect back in case of any other error
 
     return render(request, 'home.html', {'doctors': doctors})
+
+
+def doctor(request):
+    doctors = get_doctors()  # Get the list of doctors
+    return render(request, 'doctors.html', {'doctors': doctors})
