@@ -5,7 +5,7 @@ from django.db import IntegrityError  # For database errors
 
 from django.contrib.auth import authenticate, login
 from .models import User, appointment
-
+from django.contrib.auth.hashers import make_password, check_password
 # Create your views here.
 # def home(request):
 #     return render(request,'home.html')
@@ -31,13 +31,14 @@ def signup_view(request):
             return render(request, 'signup.html')
 
         # Save the data to the database
+        hash_password =make_password(password1)  # In production, hash the password
         try:
             # Try to create a new user in the database
             User.objects.create(
                 name=name,
                 email=email,
                 phone=phone,
-                password=password1,  # In production, store hashed passwords
+                password=hash_password,  # In production, store hashed passwords
                 blood_group=blood_group,
                 specialization=specialization,
                 user_type=user_type
@@ -69,17 +70,19 @@ def login_view(request):
         try:
             # Find the user by email
             user = User.objects.get(email=email)
-            # print(user.password)
+            print(user.password)
         except User.DoesNotExist:
             user = None
 
-        if user is not None and user.password == password:
+        if user is not None and check_password(password, user.password):
             # print(user.password)
             # Login the user
+            print("User ----------------------------------",user)
             login(request, user)
+            
             messages.success(request, "Login successful!")
-            doctors = get_doctors()  # Get the list of doctors
-            print("Doctor present",doctors)
+            # doctors = get_doctors()  # Get the list of doctors
+            # print("Doctor present ",doctors)
             return redirect('dashboard')  # Redirect to dashboard or home page
         else:
             messages.error(request, "Invalid email or password. Please try again.")

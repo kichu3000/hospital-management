@@ -140,3 +140,9 @@ MESSAGE_TAGS = {
 }
 
 ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False
+
+
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+#     'home.backends.EmailBackend',  # Custom backend for email authentication
+# ]
