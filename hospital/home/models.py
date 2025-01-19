@@ -26,13 +26,12 @@ class User(AbstractBaseUser):
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=15)
-    password = models.CharField(max_length=100)  # It will still store the password, but we will hash it
     blood_group = models.CharField(max_length=3)
     user_type = models.CharField(max_length=7, choices=USER_TYPE_CHOICES)
     specialization = models.CharField(max_length=100, blank=True, null=True)
-    last_login = models.DateTimeField(auto_now=True)  # Automatically set to the current time on login
-    is_staff = models.BooleanField(default=False)  # Used to check if the user has admin rights
-    is_active = models.BooleanField(default=True)  # To handle account activation
+    last_login = models.DateTimeField(auto_now=True)
+    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
 
     # Custom manager
     objects = UserManager()
@@ -47,11 +46,12 @@ class User(AbstractBaseUser):
         return self.name
 
     def set_password(self, raw_password):
-        self.password = make_password(raw_password)  # Hash the password before saving
+        # Password is already hashed by default, you don't need to store it manually.
+        super().set_password(raw_password)
 
     def check_password(self, raw_password):
-        return check_password(raw_password, self.password)  # Check if the password matches the hashed password
-
+        # Check password against the hashed password stored by default.
+        return super().check_password(raw_password)
 
 
 class appointment(models.Model):

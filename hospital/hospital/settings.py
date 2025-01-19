@@ -46,11 +46,12 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',  # This must be included
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # Required for authentication
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
 
 
 ROOT_URLCONF = 'hospital.urls'
@@ -146,3 +147,26 @@ ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False
 #     'django.contrib.auth.backends.ModelBackend',
 #     'home.backends.EmailBackend',  # Custom backend for email authentication
 # ]
+
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/dash/'
+
+
+# Redirect authenticated users to their dashboard by default
+LOGIN_REDIRECT_URL = '/user_dashboard/'  # Change this to match your desired URL
+
+# settings.py
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'  # Use the database to store sessions
+SESSION_COOKIE_NAME = 'sessionid'  # The name of the session cookie
+SESSION_COOKIE_AGE = 1209600  # Set session timeout to 2 weeks
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False  # Keep the session after the browser is closed
+SESSION_SAVE_EVERY_REQUEST = True  # Save session on every request
+
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # Default backend for username/password authentication
+]
+
+

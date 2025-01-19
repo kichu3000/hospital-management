@@ -6,6 +6,7 @@ from django.db import IntegrityError  # For database errors
 from django.contrib.auth import authenticate, login
 from .models import User, appointment
 from django.contrib.auth.hashers import make_password, check_password
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 # def home(request):
 #     return render(request,'home.html')
@@ -58,43 +59,6 @@ def signup_view(request):
     return render(request, 'signup.html')
 
 
-
-
-
-def login_view(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')  # Get the email from the form
-        password = request.POST.get('password')  # Get the password from the form
-
-        # Authenticate user
-        try:
-            # Find the user by email
-            user = User.objects.get(email=email)
-            print(user.password)
-        except User.DoesNotExist:
-            user = None
-
-        if user is not None and check_password(password, user.password):
-            # print(user.password)
-            # Login the user
-            print("User ----------------------------------",user)
-            login(request, user)
-            
-            messages.success(request, "Login successful!")
-            # doctors = get_doctors()  # Get the list of doctors
-            # print("Doctor present ",doctors)
-            return redirect('dashboard')  # Redirect to dashboard or home page
-        else:
-            messages.error(request, "Invalid email or password. Please try again.")
-            return redirect('login')  # Re-render login page with error
-
-    return render(request, 'login.html')
-
-
-
-
-def dashboard(request):
-    pass
 
 
 
@@ -158,3 +122,44 @@ def book_appointment(request):
 def doctor(request):
     doctors = get_doctors()  # Get the list of doctors
     return render(request, 'doctors.html', {'doctors': doctors})
+
+
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')  # Get the email from the form
+        password = request.POST.get('password')  # Get the password from the form
+
+        # Authenticate user
+        try:
+            user = User.objects.get(email=email)  # Find the user by email
+        except User.DoesNotExist:
+            user = None
+
+        if user is not None and check_password(password, user.password):
+            login(request, user)  # Login the user
+            print("Session data after login:", request.session.items())  # Debug the session data
+            messages.success(request, "Login successful!")
+            
+            # Debug logs
+            print("Is authenticated:", request.user.is_authenticated)
+            print("Redirecting based on user type...")
+  # Redirect to the page the user was trying to access
+
+            if user.user_type == 'doctor':
+                print("Redirecting to doctor dashboard")
+                return redirect('doctor_dashboard')  # Ensure this matches the name in urls.py
+            else:
+                print("Session Key:", request.session.session_key)
+                print("User Authenticated:", request.user.is_authenticated)
+
+                print("Redirecting to user dashboard")
+                #return render(request,'user_dashboard.html')
+                return redirect('dashboard')  # Ensure this matches the name in urls.py
+
+        else:
+            messages.error(request, "Invalid email or password. Please try again.")
+            return redirect('login')  # Re-render login page with error
+
+    print("Rendering login page")
+    return render(request, 'login.html')  # Render login page for GET requests
+
