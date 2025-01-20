@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+  <!-- Welcome Message -->
+  <div class="row mb-4">
+    <div class="col">
+      <h2>Welcome, {{ user_name }}!</h2>
+      <p class="lead">Here’s your dashboard.</p>
+    </div>
+  </div>
+
+  <!-- User Info Card -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="card-title">User Profile</h5>
+        </div>
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">Email: {{ user_email }}</h6>
+          <p class="card-text"><strong>User Type:</strong> {{ user_type }}</p>
+          
+          <!-- Optionally Add More Info -->
+          <p class="card-text"><strong>Member Since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
+          <p class="card-text"><strong>Last Login:</strong> {{ user.last_login|date:"F j, Y, g:i a" }}</p>
+          
+          <!-- Optional Button for Updating Profile -->
+          {% comment %} <a href="{% url 'profile_update' %}" class="btn btn-primary mt-3">Update Profile</a> {% endcomment %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity Section (Optional) -->
+  <div class="row mt-5">
+    <div class="col">
+      <h4>Recent Activity</h4>
+      <div class="list-group">
+        <!-- Example of Activity Item -->
+        <div class="list-group-item">
+          <h6 class="mb-1">Logged in</h6>
+          <small>Just now</small>
+        </div>
+        <!-- Add other activities here dynamically -->
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

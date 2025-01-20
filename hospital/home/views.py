@@ -3,10 +3,11 @@ from . forms import SignUpForm
 from django.contrib import messages  # For user feedback
 from django.db import IntegrityError  # For database errors
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import  login,logout
 from .models import User, appointment
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 # Create your views here.
 # def home(request):
 #     return render(request,'home.html')
@@ -137,24 +138,30 @@ def login_view(request):
 
         if user is not None and check_password(password, user.password):
             login(request, user)  # Login the user
-            print("Session data after login:", request.session.items())  # Debug the session data
+            # print("Session data after login:", request.session.items())
+
             messages.success(request, "Login successful!")
             
             # Debug logs
-            print("Is authenticated:", request.user.is_authenticated)
-            print("Redirecting based on user type...")
+            # print("Redirecting based on user type...")
   # Redirect to the page the user was trying to access
 
             if user.user_type == 'doctor':
                 print("Redirecting to doctor dashboard")
+                
                 return redirect('doctor_dashboard')  # Ensure this matches the name in urls.py
             else:
-                print("Session Key:", request.session.session_key)
-                print("User Authenticated:", request.user.is_authenticated)
+                # print("Session Key:", request.session.session_key)
+                # print("User Authenticated:", request.user.is_authenticated)
 
                 print("Redirecting to user dashboard")
-                #return render(request,'user_dashboard.html')
-                return redirect('dashboard')  # Ensure this matches the name in urls.py
+
+                request.session['user_name'] = user.name
+                request.session['user_email'] = user.email
+                request.session['is_authenticated'] = user.is_authenticated
+                request.session['user_type'] = user.user_type
+
+                return redirect('user_dashboard')  # Ensure this matches the name in urls.py
 
         else:
             messages.error(request, "Invalid email or password. Please try again.")
@@ -163,3 +170,28 @@ def login_view(request):
     print("Rendering login page")
     return render(request, 'login.html')  # Render login page for GET requests
 
+
+
+
+
+
+
+def user_dashboard(request):
+    # Get session data manually
+    user_email = request.session.get('user_email')
+    user_name = request.session.get('user_name')
+    user_type = request.session.get('user_type')
+    is_authenticated = request.session.get('is_authenticated')
+
+    # Check if the user is authenticated
+    if not is_authenticated:
+        return HttpResponse("You are not logged in.", status=401)  # Handle unauthenticated users
+
+    # Use these details in the view
+    context = {
+        'user_name': user_name,
+        'user_email': user_email,
+        'user_type': user_type,
+    }
+
+    return render(request, 'user_dashboard.html', context)
