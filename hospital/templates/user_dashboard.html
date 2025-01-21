@@ -3,50 +3,119 @@
 
 {% block content %}
 <div class="container mt-5">
-  <!-- Welcome Message -->
-  <div class="row mb-4">
-    <div class="col">
-      <h2>Welcome, {{ user_name }}!</h2>
-      <p class="lead">Here’s your dashboard.</p>
-    </div>
-  </div>
-
-  <!-- User Info Card -->
-  <div class="row">
-    <div class="col-md-6">
-      <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-          <h5 class="card-title">User Profile</h5>
+    <!-- Welcome Message -->
+    <div class="row mb-4">
+        <div class="col text-center">
+            <h2>Welcome, {{ user_name }}!</h2>
+            <p class="lead">Here’s an overview of your profile and appointments.</p>
         </div>
-        <div class="card-body">
-          <h6 class="card-subtitle mb-2 text-muted">Email: {{ user_email }}</h6>
-          <p class="card-text"><strong>User Type:</strong> {{ user_type }}</p>
-          
-          <!-- Optionally Add More Info -->
-          <p class="card-text"><strong>Member Since:</strong> {{ user.date_joined|date:"F j, Y" }}</p>
-          <p class="card-text"><strong>Last Login:</strong> {{ user.last_login|date:"F j, Y, g:i a" }}</p>
-          
-          <!-- Optional Button for Updating Profile -->
-          {% comment %} <a href="{% url 'profile_update' %}" class="btn btn-primary mt-3">Update Profile</a> {% endcomment %}
+    </div>
+
+    <!-- User Info Section with Profile Picture -->
+    <div class="row mb-4 justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+              <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title">Your Profile</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-dark table-striped">
+                        <tbody>
+                            <tr>
+                                <th scope="row">Email</th>
+                                <td>{{ user_email }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Phone</th>
+                                <td>{{ user_phone }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Blood Group</th>
+                                <td>{{ blood_group }}</td>
+                            </tr>
+                            {% if address != "Unknown" %}
+                            <tr>
+                                <th scope="row">Address</th>
+                                <td>{{ address }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if dob %}
+                            <tr>
+                                <th scope="row">Date of Birth</th>
+                                <td>{{ dob }}</td>
+                            </tr>
+                            {% endif %}
+                            {% if gender != "Unknown" %}
+                            <tr>
+                                <th scope="row">Gender</th>
+                                <td>{{ gender }}</td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                    <!-- Optional Profile Update Button -->
+                    <a href="" class="btn btn-primary">Update Profile</a>
+                </div>
+            </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Recent Activity Section (Optional) -->
-  <div class="row mt-5">
-    <div class="col">
-      <h4>Recent Activity</h4>
-      <div class="list-group">
-        <!-- Example of Activity Item -->
-        <div class="list-group-item">
-          <h6 class="mb-1">Logged in</h6>
-          <small>Just now</small>
+    <!-- Appointments Section -->
+    <div class="row mt-5">
+        <div class="col">
+            <h4>Your Appointments</h4>
+
+            <!-- Upcoming Appointments -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title">Upcoming Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if upcoming_appointments %}
+                        <ul class="list-group">
+                            {% for appointment in upcoming_appointments %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <div>
+                                        <h6><strong>Doctor:</strong> {{ appointment.doctor_name }}</h6>
+                                        <p><strong>Date:</strong> {{ appointment.date|date:"F j, Y" }}</p>
+                                        <p><strong>Time:</strong> {{ appointment.time|time:"g:i A" }}</p>
+                                    </div>
+                                    <span class="badge bg-success rounded-pill">{{ appointment.status }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">You have no upcoming appointments.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Past Appointments -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="card-title">Past Appointments</h5>
+                </div>
+                <div class="card-body">
+                    {% if past_appointments %}
+                        <ul class="list-group">
+                            {% for appointment in past_appointments %}
+                                <li class="list-group-item d-flex justify-content-between">
+                                    <div>
+                                        <h6><strong>Doctor:</strong> {{ appointment.doctor_name }}</h6>
+                                        <p><strong>Date:</strong> {{ appointment.date|date:"F j, Y" }}</p>
+                                    </div>
+                                    <span class="badge bg-secondary rounded-pill">{{ appointment.status }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">You have no past appointments.</p>
+                    {% endif %}
+                </div>
+            </div>
         </div>
-        <!-- Add other activities here dynamically -->
-      </div>
     </div>
-  </div>
-
 </div>
 {% endblock %}

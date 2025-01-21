@@ -8,6 +8,7 @@ from .models import User, appointment
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from datetime import datetime
 # Create your views here.
 # def home(request):
 #     return render(request,'home.html')
@@ -150,7 +151,7 @@ def login_view(request):
                 print("Redirecting to doctor dashboard")
                 
                 return redirect('doctor_dashboard')  # Ensure this matches the name in urls.py
-            else:
+            elif user.user_type == 'patient':
                 # print("Session Key:", request.session.session_key)
                 # print("User Authenticated:", request.user.is_authenticated)
 
@@ -160,8 +161,13 @@ def login_view(request):
                 request.session['user_email'] = user.email
                 request.session['is_authenticated'] = user.is_authenticated
                 request.session['user_type'] = user.user_type
+                request.session['user_phone'] = user.phone
+                request.session['blood_group'] = user.blood_group
+                request.session['date_of_birth'] = user.date_of_birth.strftime('%Y-%m-%d')  # Serialize date
 
                 return redirect('user_dashboard')  # Ensure this matches the name in urls.py
+            else:
+                return redirect('admin_dashboard')  # Ensure this matches the name in urls.py
 
         else:
             messages.error(request, "Invalid email or password. Please try again.")
@@ -178,10 +184,14 @@ def login_view(request):
 
 def user_dashboard(request):
     # Get session data manually
+
     user_email = request.session.get('user_email')
     user_name = request.session.get('user_name')
     user_type = request.session.get('user_type')
     is_authenticated = request.session.get('is_authenticated')
+    user_phone = request.session.get('user_phone')
+    blood_group = request.session.get('blood_group')
+    date_of_birth = request.session.get('date_of_birth')
 
     # Check if the user is authenticated
     if not is_authenticated:
@@ -192,6 +202,9 @@ def user_dashboard(request):
         'user_name': user_name,
         'user_email': user_email,
         'user_type': user_type,
+        'user_phone': user_phone,
+        'blood_group': blood_group,
+        'dob': date_of_birth
     }
 
     return render(request, 'user_dashboard.html', context)

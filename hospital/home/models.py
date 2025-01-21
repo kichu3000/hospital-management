@@ -22,6 +22,11 @@ class User(AbstractBaseUser):
         ('patient', 'Patient'),
         ('doctor', 'Doctor'),
     ]
+    GENDER = [
+        ('male','Male'),
+        ('female','Female'),
+        ('Unknown','Unknown')
+    ]
 
     name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
@@ -29,9 +34,12 @@ class User(AbstractBaseUser):
     blood_group = models.CharField(max_length=3)
     user_type = models.CharField(max_length=7, choices=USER_TYPE_CHOICES)
     specialization = models.CharField(max_length=100, blank=True, null=True)
-    last_login = models.DateTimeField(auto_now=True)
+    last_login = models.DateTimeField(auto_now=True,null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    adress = models.CharField(max_length=100, default='Unknown')
+    gender = models.CharField(max_length=10, choices=GENDER, default='Unknown')
+    date_of_birth = models.DateField(null=True, blank=True)  # Allow null and blank values
 
     # Custom manager
     objects = UserManager()
@@ -53,10 +61,9 @@ class User(AbstractBaseUser):
         # Check password against the hashed password stored by default.
         return super().check_password(raw_password)
 
-
 class appointment(models.Model):
     patient_name = models.CharField(max_length=255)
-    doctor_name = models.CharField(max_length=255,default='Unknown Doctor') 
+    doctor_name = models.CharField(max_length=255, default='Unknown Doctor') 
     date = models.DateField()
     email = models.EmailField()
     phone = models.CharField(max_length=15)
