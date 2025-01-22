@@ -164,6 +164,8 @@ def login_view(request):
                 request.session['user_phone'] = user.phone
                 request.session['blood_group'] = user.blood_group
                 request.session['date_of_birth'] = user.date_of_birth.strftime('%Y-%m-%d')  # Serialize date
+                request.session['gender'] = user.gender
+                request.session['address'] = user.address
 
                 return redirect('user_dashboard')  # Ensure this matches the name in urls.py
             else:
@@ -192,6 +194,10 @@ def user_dashboard(request):
     user_phone = request.session.get('user_phone')
     blood_group = request.session.get('blood_group')
     date_of_birth = request.session.get('date_of_birth')
+    gender = request.session.get('gender')
+    address = request.session.get('address')
+
+ 
 
     # Check if the user is authenticated
     if not is_authenticated:
@@ -204,7 +210,71 @@ def user_dashboard(request):
         'user_type': user_type,
         'user_phone': user_phone,
         'blood_group': blood_group,
-        'dob': date_of_birth
+        'dob': date_of_birth,
+        'gender' : gender,
+        'address' : address
     }
 
     return render(request, 'user_dashboard.html', context)
+
+
+
+
+
+
+def update_profile(request):
+    user_email = request.session.get('user_email')
+    if not user_email:
+        return redirect('login')  # Redirect to login page if user is not logged in
+    try:
+        user = User.objects.get(email=user_email)  # Find the user by email
+    except User.DoesNotExist:
+        return redirect('login')  # Redirect to login page if user is not found
+    
+    if request.method == 'POST':
+        user.name = request.POST.get('name')
+        user.phone = request.POST.get('phone')
+        user.blood_group = request.POST.get('blood_group') 
+        user.address = request.POST.get('address')
+        user.gender = request.POST.get('gender')
+        user.date_of_birth = request.POST.get('date_of_birth')
+
+        try:
+            user.save()  # Save the updated user details
+            messages.success(request, "Profile updated successfully!")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {e}")
+        
+        return redirect('login') # Redirect to the user dashboard
+    return render(request, 'update_profile.html', {'user': user})
+
+
+def delete_account(request):
+    # Retrieve the logged-in user's email from the session
+    user_email = request.session.get('user_email')
+
+
+    if not user_email:
+        # If no user_email in session, redirect to login
+        messages.error(request, "You need to log in to delete your account.")
+        return redirect('login')
+
+    try:
+        # Find the user by email
+        user = User.objects.get(email=user_email)
+    except User.DoesNotExist:
+        # If the user doesn't exist, clear the session and redirect to login
+        messages.error(request, "Account not found.")
+        request.session.flush()
+        return redirect('login')
+
+    # Directly delete the user account
+    user.delete()
+    request.session.flush()  # Clear session after account deletion
+    messages.success(request, "Your account has been deleted successfully.")
+    return redirect('login')  # Redirect to login after deletion
+
+
+def logout(request):
+    request.session.flush()  # Clears all session data
+    return redirect('login')

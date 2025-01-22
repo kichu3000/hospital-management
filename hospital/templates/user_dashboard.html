@@ -40,7 +40,7 @@
                                 <td>{{ address }}</td>
                             </tr>
                             {% endif %}
-                            {% if dob %}
+                            {% if dob != "1000-01-01" %}
                             <tr>
                                 <th scope="row">Date of Birth</th>
                                 <td>{{ dob }}</td>
@@ -55,7 +55,8 @@
                         </tbody>
                     </table>
                     <!-- Optional Profile Update Button -->
-                    <a href="" class="btn btn-primary">Update Profile</a>
+                    <a href="{% url 'update_profile' %}" class="btn btn-primary">Update Profile</a>
+                    <a href="{% url 'delete_account' %}" class="btn btn-danger ml-2">Delete Account</a>
                 </div>
             </div>
         </div>
@@ -119,3 +120,5 @@
     </div>
 </div>
 {% endblock %}
+
+

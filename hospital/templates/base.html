@@ -92,18 +92,27 @@
                 </ul>
               </div>
               <div class="quote_btn-container">
-                <a href="{% url 'login' %}">
-                  <i class="fa fa-user" aria-hidden="true"></i>
-                  <span>
-                    Login
-                  </span>
-                </a>
-                <a href="{% url 'signup' %}">
-                  <i class="fa fa-user" aria-hidden="true"></i>
-                  <span>
-                    Sign Up
-                  </span>
-                </a>
+                {% if request.session.user_email %}
+                  <a href="{% url 'logout' %}">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                    <span>
+                      Logout
+                    </span>
+                  </a>
+                {% else %}
+                  <a href="{% url 'login' %}">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                    <span>
+                      Login
+                    </span>
+                  </a>
+                  <a href="{% url 'signup' %}">
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                    <span>
+                      Sign Up
+                    </span>
+                  </a>
+                {% endif %}
               </div>
             </div>
           </nav>

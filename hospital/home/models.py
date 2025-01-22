@@ -37,9 +37,9 @@ class User(AbstractBaseUser):
     last_login = models.DateTimeField(auto_now=True,null=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    adress = models.CharField(max_length=100, default='Unknown')
+    address = models.CharField(max_length=100, default='Unknown')
     gender = models.CharField(max_length=10, choices=GENDER, default='Unknown')
-    date_of_birth = models.DateField(null=True, blank=True)  # Allow null and blank values
+    date_of_birth = models.DateField(null=True, blank=True,default='1000-01-01')  # Allow null and blank values
 
     # Custom manager
     objects = UserManager()
