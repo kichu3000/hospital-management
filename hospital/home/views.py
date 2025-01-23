@@ -66,9 +66,6 @@ def signup_view(request):
 
 
 #To get all the doctors from the database, we can create a helper function in views.py:
-def get_doctors():
-    doctors = User.objects.filter(user_type='doctor')
-    return doctors
 
 
 
@@ -117,12 +114,19 @@ def book_appointment(request):
         except Exception as e:
             messages.error(request, f"An error occurred: {e}")
             return redirect('book_appointment')  # Redirect back in case of any other error
-
+    logout(request)  # Clear session data
     return render(request, 'home.html', {'doctors': doctors})
+
+
+
+def get_doctors():
+    doctors = User.objects.filter(user_type='doctor')
+    return doctors
 
 
 def doctor(request):
     doctors = get_doctors()  # Get the list of doctors
+    logout(request)  # Clear session data
     return render(request, 'doctors.html', {'doctors': doctors})
 
 
@@ -202,6 +206,13 @@ def user_dashboard(request):
     # Check if the user is authenticated
     if not is_authenticated:
         return HttpResponse("You are not logged in.", status=401)  # Handle unauthenticated users
+    
+    appointments = appointment.objects.filter(email=user_email)  # Get the user's appointments
+
+    current_date = datetime.now().date()  # Get the current date
+    past_appointments = appointments.filter(date__lt=current_date)  # Get past appointments
+    upcoming_appointments = appointments.filter(date__gte=current_date)  # Get upcoming appointments
+
 
     # Use these details in the view
     context = {
@@ -212,7 +223,9 @@ def user_dashboard(request):
         'blood_group': blood_group,
         'dob': date_of_birth,
         'gender' : gender,
-        'address' : address
+        'address' : address,
+        'past_appointments': past_appointments,
+        'upcoming_appointments': upcoming_appointments
     }
 
     return render(request, 'user_dashboard.html', context)
@@ -278,3 +291,18 @@ def delete_account(request):
 def logout(request):
     request.session.flush()  # Clears all session data
     return redirect('login')
+
+
+def cancel_appointment(request):
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointment_id')
+        print("Appointment ID:", appointment_id)
+        try:
+            appointment_cancel = appointment.objects.get(id=appointment_id)
+            print("Appointment found:", appointment_cancel)
+            appointment_cancel.delete()
+            messages.success(request, "Appointment cancelled successfully.")
+        except appointment.DoesNotExist:
+            messages.error(request, "Appointment not found.")
+    return redirect('user_dashboard')  # Redirect to the user dashboard after cancellation
+    
