@@ -329,11 +329,6 @@ def doctor_dashboard(request):
     address = request.session.get('address')
     specilization = request.session.get('specialization')
 
-    print("User Type:", user_type)
-    print("User Email:", user_email)
-    print("User Name:", user_name)
-    print("Is Authenticated:", is_authenticated)
-    
 
     # Check if the user is authenticated and is a doctor
     if  user_type != 'doctor':
@@ -362,3 +357,38 @@ def doctor_dashboard(request):
     return render(request, 'doctor_dashboard.html', context)
 
 
+
+
+
+def prescription(request):
+
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointment_id')
+
+        try:
+            appointment_obj = appointment.objects.get(id=appointment_id)
+            email = appointment_obj.email
+        except appointment.DoesNotExist:
+            messages.error(request, "Appointment not found.")
+            return redirect('doctor_dashboard')
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            messages.error(request, "Patient not found.")
+            return redirect('doctor_dashboard')
+        
+        name = appointment_obj.patient_name
+        symptoms = appointment_obj.Symptoms
+        date_of_birth = user.date_of_birth
+        gender = user.gender
+
+        content = {
+            'name': name,
+            'symptoms': symptoms,
+            'date_of_birth': date_of_birth,
+            'gender' : gender,
+        }
+
+    return render(request, 'prescription.html',content)
+    

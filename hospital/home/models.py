@@ -77,5 +77,39 @@ class appointment(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='upcoming')
 
     def __str__(self):
-        return f'{self.patient_name} - {self.doctor_name} on {self.date}'
+        return f'{self.patient_name} - {self.doctor_name} on {self.date} and {self.email}'
+    
+
+
+class Prescription(models.Model):
+    # Doctor and Patient Info
+    doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="prescriptions",limit_choices_to={'user_type': 'doctor'} )
+    patient_name = models.CharField(max_length=100)
+    patient_dob = models.DateField(null=True, blank=True)  # Patient Date of Birth
+    patient_gender = models.CharField(max_length=10, choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")), blank=True)
+    symptoms = models.TextField(null=True, blank=True)
+
+    # Prescription Details
+    diagnosis = models.TextField()
+    additional_instructions = models.TextField(null=True, blank=True)
+    tests_to_conduct = models.TextField(null=True, blank=True)
+    follow_up_date = models.DateField(null=True, blank=True)
+
+
+    def __str__(self):
+        return f"Prescription for {self.patient_name} by Dr. {self.doctor}"
+
+
+
+
+class Medication(models.Model):
+    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name="medications")
+    name = models.CharField(max_length=100)
+    dosage = models.CharField(max_length=50)
+    frequency = models.CharField(max_length=50)
+    duration = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.name} ({self.dosage}) - {self.frequency} for {self.duration}"
+
     

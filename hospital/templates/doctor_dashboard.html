@@ -76,13 +76,13 @@
                                     <div>
                                         <h6><strong>Patient:</strong> {{ appointment.patient_name }}</h6>
                                         <p><strong>Date:</strong> {{ appointment.date|date:"F j, Y" }}</p>
-                                        <p><strong>Symptoms:</strong> {{ appointment.symptoms }}</p>
+                                        <p><strong>Symptoms:</strong> {{ appointment.Symptoms }}</p>
                                     </div>
                                     <div>
-                                        <form method="post" action="">
+                                        <form method="post" action="{% url 'prescription' %} " class="mt-2">
                                             {% csrf_token %}
                                             <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
-                                            <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                            <button type="submit" class="btn btn-sm btn-primary">Prescription</button>
                                         </form>
                                         <form method="post" action="{% url 'cancel_appointment' %}" class="mt-2">
                                             {% csrf_token %}

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Create Prescription</h2>
+    <hr>
+
+    <!-- Patient Information -->
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5>Patient Details</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ name }}</p>
+            <p><strong>DOB:</strong> {{ date_of_birth }}</p>
+            <p><strong>Gender:</strong> {{ gender }}</p>
+            <p><strong>Symptoms:</strong> {{ symptoms }}</p>
+        </div>
+    </div>
+
+    <!-- Prescription Form -->
+   <form method="post" action=""> {% comment %} {% url 'submit_prescription' %} {% endcomment %}
+        {% csrf_token %}
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5>Prescription Details</h5>
+            </div>
+            <div class="card-body">
+                <!-- Diagnosis -->
+                <div class="form-group">
+                    <label for="diagnosis">Diagnosis</label>
+                    <textarea name="diagnosis" id="diagnosis" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <!-- Medications -->
+                <div id="medications">
+                    <label>Medications</label>
+                    <div class="input-group mb-3">
+                        <input type="text" name="medicine_name" placeholder="Medicine Name" class="form-control" required>
+                        <input type="text" name="dosage" placeholder="Dosage (e.g., 500 mg)" class="form-control" required>
+                        <input type="text" name="frequency" placeholder="Frequency (e.g., Once a day)" class="form-control" required>
+                        <input type="text" name="duration" placeholder="Duration (e.g., 7 days)" class="form-control" required>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" id="add-more-medicine">Add More Medicine</button>
+
+                <!-- Additional Instructions -->
+                <div class="form-group mt-3">
+                    <label for="instructions">Additional Instructions</label>
+                    <textarea name="instructions" id="instructions" class="form-control" rows="2"></textarea>
+                </div>
+
+                <!-- Tests -->
+                <div class="form-group mt-3">
+                    <label for="tests">Tests to Conduct</label>
+                    <input type="text" name="tests" id="tests" class="form-control" placeholder="e.g., Blood Test, X-ray">
+                </div>
+
+                <!-- Follow-Up Date -->
+                <div class="form-group mt-3">
+                    <label for="follow_up">Follow-Up Date</label>
+                    <input type="date" name="follow_up" id="follow_up" class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <!-- Save or Send -->
+        <button type="submit" class="btn btn-primary">Save Prescription</button>
+        <button type="submit" class="btn btn-success">Send Prescription</button>
+    </form>
+</div>
+
+<script>
+    // Add JavaScript to dynamically add more medicine fields if needed
+    document.getElementById('add-more-medicine').addEventListener('click', function() {
+        const medicationsDiv = document.getElementById('medications');
+        const newMedicineFields = `
+            <div class="input-group mb-3">
+                <input type="text" name="medicine_name" placeholder="Medicine Name" class="form-control" required>
+                <input type="text" name="dosage" placeholder="Dosage (e.g., 500 mg)" class="form-control" required>
+                <input type="text" name="frequency" placeholder="Frequency (e.g., Once a day)" class="form-control" required>
+                <input type="text" name="duration" placeholder="Duration (e.g., 7 days)" class="form-control" required>
+            </div>
+        `;
+        medicationsDiv.insertAdjacentHTML('beforeend', newMedicineFields);
+    });
+</script>
+{% endblock %}
