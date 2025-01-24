@@ -83,7 +83,7 @@ class appointment(models.Model):
 
 class Prescription(models.Model):
     # Doctor and Patient Info
-    doctor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="prescriptions",limit_choices_to={'user_type': 'doctor'} )
+    doctor = models.CharField(max_length=100)
     patient_name = models.CharField(max_length=100)
     patient_dob = models.DateField(null=True, blank=True)  # Patient Date of Birth
     patient_gender = models.CharField(max_length=10, choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")), blank=True)

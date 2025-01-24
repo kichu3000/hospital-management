@@ -4,7 +4,7 @@ from django.contrib import messages  # For user feedback
 from django.db import IntegrityError  # For database errors
 
 from django.contrib.auth import  login,logout
-from .models import User, appointment
+from .models import User, appointment, Prescription, Medication
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -361,34 +361,132 @@ def doctor_dashboard(request):
 
 
 def prescription(request):
-
     if request.method == 'POST':
         appointment_id = request.POST.get('appointment_id')
 
         try:
+            # Fetch the appointment object
             appointment_obj = appointment.objects.get(id=appointment_id)
-            email = appointment_obj.email
+            user = User.objects.get(email=appointment_obj.email)  # Assumes email maps to user
         except appointment.DoesNotExist:
             messages.error(request, "Appointment not found.")
             return redirect('doctor_dashboard')
+        except User.DoesNotExist:
+            messages.error(request, "Patient associated with the appointment not found.")
+            return redirect('doctor_dashboard')
+
+        # Prepare the context with patient details
+        content = {
+            'name': appointment_obj.patient_name,
+            'symptoms': appointment_obj.Symptoms,
+            'date_of_birth': user.date_of_birth,
+            'gender': user.gender,
+            'appointment_id': appointment_id
+        }
+        return render(request, 'prescription.html', content)
+
+    # Default redirect for GET request
+    messages.error(request, "Invalid access method.")
+    return redirect('doctor_dashboard')
+
+
+
+
+
+def store_prescription(request):
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointment_id')
+        symptoms = request.POST.get('symptoms')
+        diagnosis = request.POST.get('diagnosis')
+        additional_instructions = request.POST.get('instructions')
+        tests_to_conduct = request.POST.get('tests')
+        follow_up_date = request.POST.get('follow_up')
+
+        # For testing
+        appointment_obj = appointment.objects.get(id=appointment_id)
+        doctor = request.session.get('user_name')
+        patient = appointment_obj.patient_name
+        print("Appointment ID:", appointment_id)
+        print(appointment_obj)
+        print(doctor)
+        print(patient)
+
+        
 
         try:
-            user = User.objects.get(email=email)
+            appointment_obj = appointment.objects.get(id=appointment_id)
+            user = User.objects.get(email=appointment_obj.email)  # Assumes email maps to user
+            doctor = request.session.get('user_name')
+            patient = appointment_obj.patient_name
+            symptoms = appointment_obj.Symptoms
+
+
+            print("Appointment ID:", appointment_id)
+            print("Symptoms:", symptoms)
+            print("Diagnosis:", diagnosis)
+            print("Instructions:", additional_instructions)
+            print("Tests:", tests_to_conduct)
+            print("Follow-up Date:", follow_up_date)
+
+
+            # Create the Prescription object
+            Prescription.objects.create(
+                doctor=doctor,
+                patient_name=patient,
+                patient_dob=user.date_of_birth,
+                patient_gender=user.gender,
+                symptoms=symptoms,
+                diagnosis=diagnosis,
+                additional_instructions=additional_instructions,
+                tests_to_conduct=tests_to_conduct,
+                follow_up_date=follow_up_date
+            )
+
+            appointment_obj.status = 'completed'  # Update the appointment status
+            appointment_obj.save()  # Save the updated appointment
+
+            messages.success(request, "Prescription stored successfully.")
+            return redirect('doctor_dashboard')  # Redirect to the dashboard
         except User.DoesNotExist:
-            messages.error(request, "Patient not found.")
-            return redirect('doctor_dashboard')
-        
-        name = appointment_obj.patient_name
-        symptoms = appointment_obj.Symptoms
-        date_of_birth = user.date_of_birth
-        gender = user.gender
+            messages.error(request, "Doctor or patient not found.")
+            print("Exception found ===============:")
+            return redirect('prescription')
+            
 
-        content = {
-            'name': name,
-            'symptoms': symptoms,
-            'date_of_birth': date_of_birth,
-            'gender' : gender,
-        }
+    messages.error(request, "Invalid access method.")
+    return redirect('doctor_dashboard')
 
-    return render(request, 'prescription.html',content)
-    
+
+
+
+
+
+
+
+# def store_medicine(request):
+#     if request.method == 'POST':
+#         prescription_id = request.POST.get('prescription_id')
+#         medicines = request.POST.getlist('medicines')  # List of medicines (serialized JSON)
+
+#         try:
+#             # Fetch the Prescription object
+#             prescription = Prescription.objects.get(id=prescription_id)
+
+#             # Parse the medicines list and create Medication objects
+#             for medicine in medicines:
+#                 Medication.objects.create(
+#                     prescription=prescription,
+#                     name=medicine['name'],
+#                     dosage=medicine['dosage'],
+#                     frequency=medicine['frequency'],
+#                     duration=medicine['duration']
+#                 )
+
+#             messages.success(request, "Medicines stored successfully.")
+#             return redirect('prescription')  # Redirect to the prescription page
+#         except Prescription.DoesNotExist:
+#             messages.error(request, "Prescription not found.")
+#             return redirect('medicine')
+
+#     messages.error(request, "Invalid access method.")
+#     return redirect('doctor_dashboard')

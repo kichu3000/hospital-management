@@ -20,16 +20,18 @@
     </div>
 
     <!-- Prescription Form -->
-   <form method="post" action=""> {% comment %} {% url 'submit_prescription' %} {% endcomment %}
+   <form method="post" action="{% url 'store_prescription' %}"> 
         {% csrf_token %}
         <div class="card mb-4">
             <div class="card-header bg-success text-white">
                 <h5>Prescription Details</h5>
             </div>
+
             <div class="card-body">
                 <!-- Diagnosis -->
                 <div class="form-group">
                     <label for="diagnosis">Diagnosis</label>
+                    <input type="hidden" name="appointment_id" value="{{ appointment_id }}"> <!-- This is the appointment ID -->
                     <textarea name="diagnosis" id="diagnosis" class="form-control" rows="3" required></textarea>
                 </div>
 
