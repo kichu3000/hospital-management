@@ -3,39 +3,19 @@
 
 {% block content %}
 
-
-{% if messages %}
-<div class="container mt-3">
-  {% for message in messages %}
-    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-      {{ message }}
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  {% endfor %}
-</div>
-{% endif %}
-
-
-
-
-
-
 <div class="container mt-5">
     <!-- Welcome Message -->
     <div class="row mb-4">
         <div class="col text-center">
-            <h2>Welcome, {{ user_name }}!</h2>
-            <p class="lead">Here’s an overview of your profile and appointments.</p>
+            <h2>Welcome, Dr. {{ user_name }}!</h2>
+            <p class="lead">Manage your appointments and view patient details.</p>
         </div>
     </div>
 
-    <!-- User Info Section with Profile Picture -->
+    <!-- Doctor Profile Section -->
     <div class="row mb-4 justify-content-center">
         <div class="col-md-6">
             <div class="card shadow-sm">
-              <div class="card shadow-lg">
                 <div class="card-header bg-primary text-white">
                     <h5 class="card-title">Your Profile</h5>
                 </div>
@@ -43,16 +23,16 @@
                     <table class="table table-dark table-striped">
                         <tbody>
                             <tr>
+                                <th scope="row">Specialization</th>
+                                <td>{{ specialization }}</td>
+                            </tr>
+                            <tr>
                                 <th scope="row">Email</th>
                                 <td>{{ user_email }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Phone</th>
                                 <td>{{ user_phone }}</td>
-                            </tr>
-                            <tr>
-                                <th scope="row">Blood Group</th>
-                                <td>{{ blood_group }}</td>
                             </tr>
                             {% if address != "Unknown" %}
                             <tr>
@@ -74,24 +54,19 @@
                             {% endif %}
                         </tbody>
                     </table>
-                    <!-- Optional Profile Update Button -->
                     <a href="{% url 'update_profile' %}" class="btn btn-primary">Update Profile</a>
-                    <a href="{% url 'delete_account' %}" class="btn btn-danger ml-2">Delete Account</a>
                 </div>
             </div>
         </div>
-      </div>
     </div>
 
     <!-- Appointments Section -->
-    <div class="row mt-5">
+    <div class="row">
         <div class="col">
-            <h4>Your Appointments</h4>
-
             <!-- Upcoming Appointments -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="card-title">Your Appointments</h5>
+                    <h5 class="card-title">Patient Appointments</h5>
                 </div>
                 <div class="card-body">
                     {% if upcoming_appointments %}
@@ -99,51 +74,53 @@
                             {% for appointment in upcoming_appointments %}
                                 <li class="list-group-item d-flex justify-content-between">
                                     <div>
-                                        <h6><strong>Doctor:</strong> {{ appointment.doctor_name }}</h6>
+                                        <h6><strong>Patient:</strong> {{ appointment.patient_name }}</h6>
                                         <p><strong>Date:</strong> {{ appointment.date|date:"F j, Y" }}</p>
-                                        <p><strong>Symptoms:</strong> {{ appointment.Symptoms }}</p>
+                                        <p><strong>Symptoms:</strong> {{ appointment.symptoms }}</p>
                                     </div>
-                                    <form method="post" action="{% url 'cancel_appointment' %}">
-                                        {% csrf_token %}
-                                        <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
-                                        <button type="submit" class="btn btn-sm btn-danger mt-4" style="width: 80px; height: 30px;">Cancel</button>
-                                    </form>
+                                    <div>
+                                        <form method="post" action="">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                            <button type="submit" class="btn btn-sm btn-success">Complete</button>
+                                        </form>
+                                        <form method="post" action="{% url 'cancel_appointment' %}" class="mt-2">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                            <button type="submit" class="btn btn-sm btn-danger">Cancel</button>
+                                        </form>
+                                    </div>
                                 </li>
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p class="text-muted">You have no upcoming appointments.</p>
+                        <p class="text-muted">No upcoming appointments.</p>
                     {% endif %}
                 </div>
             </div>
 
-            <!-- Past Appointments -->
+            <!-- Patient History -->
             <div class="card shadow-sm">
                 <div class="card-header bg-secondary text-white">
-                    <h5 class="card-title">Past Appointments</h5>
+                    <h5 class="card-title">Patient History</h5>
                 </div>
                 <div class="card-body">
                     {% if past_appointments %}
                         <ul class="list-group">
                             {% for appointment in past_appointments %}
-                                <li class="list-group-item d-flex justify-content-between">
-                                    <div>
-                                        <h6><strong>Doctor:</strong> {{ appointment.doctor_name }}</h6>
-                                        <p><strong>Date:</strong> {{ appointment.date|date:"F j, Y" }}</p>
-                    
-                                    </div>
-                                    <span class="badge bg-secondary rounded-pill">{{ appointment.status }}</span>
+                                <li class="list-group-item">
+                                    <h6><strong>Patient:</strong> {{ appointment.patient_name }}</h6>
+                                    <p><strong>Date:</strong> {{ appointment.date|date:"F j, Y" }}</p>
                                 </li>
                             {% endfor %}
                         </ul>
                     {% else %}
-                        <p class="text-muted">You have no past appointments.</p>
+                        <p class="text-muted">No past appointments available.</p>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {% endblock %}
-
-

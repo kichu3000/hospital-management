@@ -63,12 +63,18 @@ class User(AbstractBaseUser):
         return super().check_password(raw_password)
 
 class appointment(models.Model):
+    STATUS_CHOICES = [
+        ('upcoming', 'Upcoming'),
+        ('completed', 'Completed'),
+        ('canceled', 'Canceled'),
+    ]
     patient_name = models.CharField(max_length=255)
     doctor_name = models.CharField(max_length=255, default='Unknown Doctor') 
     date = models.DateField()
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     Symptoms = models.TextField()
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='upcoming')
 
     def __str__(self):
         return f'{self.patient_name} - {self.doctor_name} on {self.date}'

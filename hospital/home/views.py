@@ -146,13 +146,24 @@ def login_view(request):
             # print("Session data after login:", request.session.items())
 
             messages.success(request, "Login successful!")
+        
             
-            # Debug logs
-            # print("Redirecting based on user type...")
-  # Redirect to the page the user was trying to access
+            request.session['user_name'] = user.name
+            request.session['user_email'] = user.email
+            request.session['is_authenticated'] = user.is_authenticated
+            request.session['user_type'] = user.user_type
+            request.session['user_phone'] = user.phone
+            request.session['blood_group'] = user.blood_group
+            request.session['date_of_birth'] = user.date_of_birth.strftime('%Y-%m-%d')  # Serialize date
+            request.session['gender'] = user.gender
+            request.session['address'] = user.address
+            request.session['specialization'] = user.specialization
+
 
             if user.user_type == 'doctor':
                 print("Redirecting to doctor dashboard")
+
+               
                 
                 return redirect('doctor_dashboard')  # Ensure this matches the name in urls.py
             elif user.user_type == 'patient':
@@ -161,15 +172,6 @@ def login_view(request):
 
                 print("Redirecting to user dashboard")
 
-                request.session['user_name'] = user.name
-                request.session['user_email'] = user.email
-                request.session['is_authenticated'] = user.is_authenticated
-                request.session['user_type'] = user.user_type
-                request.session['user_phone'] = user.phone
-                request.session['blood_group'] = user.blood_group
-                request.session['date_of_birth'] = user.date_of_birth.strftime('%Y-%m-%d')  # Serialize date
-                request.session['gender'] = user.gender
-                request.session['address'] = user.address
 
                 return redirect('user_dashboard')  # Ensure this matches the name in urls.py
             else:
@@ -200,6 +202,8 @@ def user_dashboard(request):
     date_of_birth = request.session.get('date_of_birth')
     gender = request.session.get('gender')
     address = request.session.get('address')
+
+
 
  
 
@@ -262,6 +266,8 @@ def update_profile(request):
     return render(request, 'update_profile.html', {'user': user})
 
 
+
+
 def delete_account(request):
     # Retrieve the logged-in user's email from the session
     user_email = request.session.get('user_email')
@@ -306,3 +312,53 @@ def cancel_appointment(request):
             messages.error(request, "Appointment not found.")
     return redirect('user_dashboard')  # Redirect to the user dashboard after cancellation
     
+
+
+
+
+def doctor_dashboard(request):
+    # Get session data manually
+    user_email = request.session.get('user_email')
+    user_name = request.session.get('user_name')
+    user_type = request.session.get('user_type')
+    is_authenticated = request.session.get('is_authenticated')
+    user_phone = request.session.get('user_phone')
+    blood_group = request.session.get('blood_group')
+    date_of_birth = request.session.get('date_of_birth')
+    gender = request.session.get('gender')
+    address = request.session.get('address')
+    specilization = request.session.get('specialization')
+
+    print("User Type:", user_type)
+    print("User Email:", user_email)
+    print("User Name:", user_name)
+    print("Is Authenticated:", is_authenticated)
+    
+
+    # Check if the user is authenticated and is a doctor
+    if  user_type != 'doctor':
+        return HttpResponse("You are not authorized to view this page.", status=403)
+
+    # Fetch appointments for the doctor
+    current_date = datetime.now().date()
+    upcoming_appointments = appointment.objects.filter(doctor_name=user_name, date__gte=current_date)
+    past_appointments = appointment.objects.filter(doctor_name=user_name, date__lt=current_date)
+
+
+    context = {
+        'user_name': user_name,
+        'user_email': user_email,
+        'user_type': user_type,
+        'user_phone': user_phone,
+        'blood_group': blood_group,
+        'dob': date_of_birth,
+        'gender': gender,
+        'address': address,
+        'upcoming_appointments': upcoming_appointments,
+        'past_appointments': past_appointments,
+        'specialization': specilization,
+    }
+
+    return render(request, 'doctor_dashboard.html', context)
+
+
