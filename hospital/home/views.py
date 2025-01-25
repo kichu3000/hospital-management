@@ -4,7 +4,7 @@ from django.contrib import messages  # For user feedback
 from django.db import IntegrityError  # For database errors
 
 from django.contrib.auth import  login,logout
-from .models import User, appointment, Prescription, Medication
+from .models import User, appointment, Prescription
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
@@ -65,9 +65,6 @@ def signup_view(request):
 
 
 
-#To get all the doctors from the database, we can create a helper function in views.py:
-
-
 
 def book_appointment(request):
     doctors = get_doctors()  # Get the list of doctors
@@ -90,11 +87,14 @@ def book_appointment(request):
         try:
             # Check if the email exists in the database
             patient_exists = User.objects.filter(email=email).exists()
+            isSameday = appointment.objects.filter(date=date).exists()
+
             if not patient_exists:
                 messages.error(request, "No account found with this email. Please create an account.")
                 return redirect('signup')  # Redirect to the signup page  # Get the Patient object by email
-            print("Patient found:", patient_exists)
-            # Create the appointment
+            if isSameday:
+                messages.error(request,"You already have an appointment booked on the same day. You cannot book two appointments on the same day.")
+                return redirect('signup')
             appointment.objects.create(
                 patient_name=patient_name,
                 doctor_name=doctor_name,  # Store doctor by ID directly
@@ -281,6 +281,7 @@ def delete_account(request):
     try:
         # Find the user by email
         user = User.objects.get(email=user_email)
+        user_appointment = appointment.objects.get(email = user_email)
     except User.DoesNotExist:
         # If the user doesn't exist, clear the session and redirect to login
         messages.error(request, "Account not found.")
@@ -288,6 +289,7 @@ def delete_account(request):
         return redirect('login')
 
     # Directly delete the user account
+    user_appointment.delete()
     user.delete()
     request.session.flush()  # Clear session after account deletion
     messages.success(request, "Your account has been deleted successfully.")
@@ -402,35 +404,22 @@ def store_prescription(request):
         tests_to_conduct = request.POST.get('tests')
         follow_up_date = request.POST.get('follow_up')
 
-        # For testing
-        appointment_obj = appointment.objects.get(id=appointment_id)
-        doctor = request.session.get('user_name')
-        patient = appointment_obj.patient_name
-        print("Appointment ID:", appointment_id)
-        print(appointment_obj)
-        print(doctor)
-        print(patient)
-
-        
+        medicine_names = request.POST.getlist('medicine_name[]')
+        dosages = request.POST.getlist('dosage[]')
+        frequencies = request.POST.getlist('frequency[]')
+        durations = request.POST.getlist('duration[]')
 
         try:
+            # Fetch the appointment object and user (patient) data
             appointment_obj = appointment.objects.get(id=appointment_id)
             user = User.objects.get(email=appointment_obj.email)  # Assumes email maps to user
+
             doctor = request.session.get('user_name')
             patient = appointment_obj.patient_name
             symptoms = appointment_obj.Symptoms
 
-
-            print("Appointment ID:", appointment_id)
-            print("Symptoms:", symptoms)
-            print("Diagnosis:", diagnosis)
-            print("Instructions:", additional_instructions)
-            print("Tests:", tests_to_conduct)
-            print("Follow-up Date:", follow_up_date)
-
-
             # Create the Prescription object
-            Prescription.objects.create(
+            prescription = Prescription.objects.create(
                 doctor=doctor,
                 patient_name=patient,
                 patient_dob=user.date_of_birth,
@@ -439,54 +428,34 @@ def store_prescription(request):
                 diagnosis=diagnosis,
                 additional_instructions=additional_instructions,
                 tests_to_conduct=tests_to_conduct,
-                follow_up_date=follow_up_date
+                follow_up_date=follow_up_date,
             )
 
+            # Prepare medicines list
+            medicines = []
+            for name, dosage, frequency, duration in zip(medicine_names, dosages, frequencies, durations):
+                medicines.append({
+                    "medicine_name": name,
+                    "dosage": dosage,
+                    "frequency": frequency,
+                    "duration": duration,
+                })
+
+            # Save medicines in the JSON field
+            prescription.medicines = medicines
+            prescription.save()
+
+            # Update appointment status
             appointment_obj.status = 'completed'  # Update the appointment status
             appointment_obj.save()  # Save the updated appointment
 
             messages.success(request, "Prescription stored successfully.")
             return redirect('doctor_dashboard')  # Redirect to the dashboard
+
         except User.DoesNotExist:
             messages.error(request, "Doctor or patient not found.")
-            print("Exception found ===============:")
-            return redirect('prescription')
-            
+            return redirect('prescription')  # Redirect back to prescription form if error occurs
 
     messages.error(request, "Invalid access method.")
     return redirect('doctor_dashboard')
 
-
-
-
-
-
-
-
-# def store_medicine(request):
-#     if request.method == 'POST':
-#         prescription_id = request.POST.get('prescription_id')
-#         medicines = request.POST.getlist('medicines')  # List of medicines (serialized JSON)
-
-#         try:
-#             # Fetch the Prescription object
-#             prescription = Prescription.objects.get(id=prescription_id)
-
-#             # Parse the medicines list and create Medication objects
-#             for medicine in medicines:
-#                 Medication.objects.create(
-#                     prescription=prescription,
-#                     name=medicine['name'],
-#                     dosage=medicine['dosage'],
-#                     frequency=medicine['frequency'],
-#                     duration=medicine['duration']
-#                 )
-
-#             messages.success(request, "Medicines stored successfully.")
-#             return redirect('prescription')  # Redirect to the prescription page
-#         except Prescription.DoesNotExist:
-#             messages.error(request, "Prescription not found.")
-#             return redirect('medicine')
-
-#     messages.error(request, "Invalid access method.")
-#     return redirect('doctor_dashboard')

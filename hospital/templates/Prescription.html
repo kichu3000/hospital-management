@@ -2,6 +2,22 @@
 {% load static %}
 
 {% block content %}
+
+
+{% if messages %}
+  <div class="container mt-3">
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+
 <div class="container mt-5">
     <h2>Create Prescription</h2>
     <hr>
@@ -32,6 +48,7 @@
                 <div class="form-group">
                     <label for="diagnosis">Diagnosis</label>
                     <input type="hidden" name="appointment_id" value="{{ appointment_id }}"> <!-- This is the appointment ID -->
+                    
                     <textarea name="diagnosis" id="diagnosis" class="form-control" rows="3" required></textarea>
                 </div>
 
@@ -39,10 +56,10 @@
                 <div id="medications">
                     <label>Medications</label>
                     <div class="input-group mb-3">
-                        <input type="text" name="medicine_name" placeholder="Medicine Name" class="form-control" required>
-                        <input type="text" name="dosage" placeholder="Dosage (e.g., 500 mg)" class="form-control" required>
-                        <input type="text" name="frequency" placeholder="Frequency (e.g., Once a day)" class="form-control" required>
-                        <input type="text" name="duration" placeholder="Duration (e.g., 7 days)" class="form-control" required>
+                        <input type="text" name="medicine_name[]" placeholder="Medicine Name" class="form-control" required>
+                        <input type="text" name="dosage[]" placeholder="Dosage (e.g., 500 mg)" class="form-control" required>
+                        <input type="text" name="frequency[]" placeholder="Frequency (e.g., Once a day)" class="form-control" required>
+                        <input type="text" name="duration[]" placeholder="Duration (e.g., 7 days)" class="form-control" required>
                     </div>
                 </div>
                 <button type="button" class="btn btn-secondary" id="add-more-medicine">Add More Medicine</button>
@@ -68,8 +85,7 @@
         </div>
 
         <!-- Save or Send -->
-        <button type="submit" class="btn btn-primary">Save Prescription</button>
-        <button type="submit" class="btn btn-success">Send Prescription</button>
+        <button type="submit" class="btn btn-primary mb-4">Save Prescription</button>
     </form>
 </div>
 

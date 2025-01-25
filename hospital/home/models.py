@@ -74,7 +74,7 @@ class appointment(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     Symptoms = models.TextField()
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='upcoming')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='completed')
 
     def __str__(self):
         return f'{self.patient_name} - {self.doctor_name} on {self.date} and {self.email}'
@@ -95,21 +95,13 @@ class Prescription(models.Model):
     tests_to_conduct = models.TextField(null=True, blank=True)
     follow_up_date = models.DateField(null=True, blank=True)
 
+    #Medicine details
+    medicines = models.JSONField(default=list)
+
+
 
     def __str__(self):
         return f"Prescription for {self.patient_name} by Dr. {self.doctor}"
 
-
-
-
-class Medication(models.Model):
-    prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name="medications")
-    name = models.CharField(max_length=100)
-    dosage = models.CharField(max_length=50)
-    frequency = models.CharField(max_length=50)
-    duration = models.CharField(max_length=50)
-
-    def __str__(self):
-        return f"{self.name} ({self.dosage}) - {self.frequency} for {self.duration}"
 
     
