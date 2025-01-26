@@ -91,7 +91,7 @@
             <!-- Upcoming Appointments -->
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="card-title">Your Appointments</h5>
+                    <h5 class="card-title">Upcoming Appointments</h5>
                 </div>
                 <div class="card-body">
                     {% if upcoming_appointments %}
@@ -133,6 +133,11 @@
                     
                                     </div>
                                     <span class="badge bg-secondary rounded-pill">{{ appointment.status }}</span>
+                                    <form method="post" action="{% url 'download_prescription' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                        <button type="submit" class="btn btn-sm btn-danger mt-4" style="width: 80px; height: 30px;">Download prescription</button>
+                                    </form>
                                 </li>
                             {% endfor %}
                         </ul>

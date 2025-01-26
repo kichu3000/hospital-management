@@ -213,10 +213,9 @@ def user_dashboard(request):
     
     appointments = appointment.objects.filter(email=user_email)  # Get the user's appointments
 
-    current_date = datetime.now().date()  # Get the current date
-    past_appointments = appointments.filter(date__lt=current_date)  # Get past appointments
-    upcoming_appointments = appointments.filter(date__gte=current_date)  # Get upcoming appointments
-
+  # Get the current date
+    past_appointments = appointments.filter(status='completed')  # Get past appointments
+    upcoming_appointments = appointments.filter(status='upcoming')  # Get upcoming appointments
 
     # Use these details in the view
     context = {
@@ -229,7 +228,8 @@ def user_dashboard(request):
         'gender' : gender,
         'address' : address,
         'past_appointments': past_appointments,
-        'upcoming_appointments': upcoming_appointments
+        'upcoming_appointments': upcoming_appointments,
+        # 'prescription': prescription,
     }
 
     return render(request, 'user_dashboard.html', context)
@@ -338,8 +338,8 @@ def doctor_dashboard(request):
 
     # Fetch appointments for the doctor
     current_date = datetime.now().date()
-    upcoming_appointments = appointment.objects.filter(doctor_name=user_name, date__gte=current_date)
-    past_appointments = appointment.objects.filter(doctor_name=user_name, date__lt=current_date)
+    upcoming_appointments = appointment.objects.filter(doctor_name=user_name, status='upcoming')
+    past_appointments = appointment.objects.filter(doctor_name=user_name, status='completed')
 
 
     context = {
@@ -443,6 +443,7 @@ def store_prescription(request):
 
             # Save medicines in the JSON field
             prescription.medicines = medicines
+            prescription.status = 'complected'
             prescription.save()
 
             # Update appointment status
@@ -459,3 +460,53 @@ def store_prescription(request):
     messages.error(request, "Invalid access method.")
     return redirect('doctor_dashboard')
 
+
+
+
+
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
+from django.core.exceptions import ObjectDoesNotExist
+
+
+def download_prescription(request):
+    if request.method == 'POST':
+        # Fetch appointment and prescription details
+        appointment_id = request.POST.get('appointment_id')
+
+        try:
+            # Fetch the appointment object using the provided appointment_id
+            appointment_obj = appointment.objects.get(id=appointment_id)
+        except ObjectDoesNotExist:
+            return HttpResponse("Appointment not found.", status=404)
+
+        try:
+            # Fetch the prescription object using the patient's name from the appointment
+            prescription_obj = Prescription.objects.get(patient_name=appointment_obj.patient_name)
+        except ObjectDoesNotExist:
+            return HttpResponse("Prescription not found for the patient.", status=404)
+
+        # Prepare context for rendering the HTML template
+        context = {
+            'prescription_obj': prescription_obj,
+        }
+
+        # Render the HTML content using the context
+        html_content = render_to_string('prescription_template.html', context)
+
+        # Convert HTML to PDF using WeasyPrint
+        try:
+            # Create a PDF from the HTML content
+            pdf_file = HTML(string=html_content).write_pdf()
+        except Exception as e:
+            return HttpResponse(f"Error in generating PDF: {str(e)}", status=500)
+
+        # Return the PDF as a response
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename=Prescription_{prescription_obj.patient_name}.pdf'
+
+        return response
+
+    return HttpResponse("Invalid request", status=400)

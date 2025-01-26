@@ -14,4 +14,5 @@ urlpatterns = [
     path('doctor_dashboard/',views.doctor_dashboard,name='doctor_dashboard'),
     path('prescription/',views.prescription,name='prescription'),
     path('store_prescription/',views.store_prescription,name='store_prescription'),
+    path('download_prescription/',views.download_prescription,name='download_prescription'),
 ]

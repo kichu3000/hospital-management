@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eaf2f1; /* Lighter background for contrast */
+            color: #000000; /* Dark text for better readability */
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: #fff; /* White background for the content */
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 32px;
+            color: #2c3e50; /* Darker text for the header */
+            margin-bottom: 10px;
+        }
+        .header p {
+            font-size: 16px;
+            color: #7f8c8d; /* Lighter text for the date and details */
+        }
+        .doctor-info, .patient-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            color: #555; /* Darker color for info sections */
+        }
+        .doctor-info div, .patient-info div {
+            width: 48%;
+        }
+        .doctor-info p, .patient-info p {
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+        .prescription-list {
+            border-top: 2px solid #ecf0f1;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        .prescription-list h3 {
+            font-size: 20px;
+            color: #2c3e50; /* Darker color for the heading */
+            margin-bottom: 10px;
+        }
+        .prescription-list ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .prescription-list li {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        table, th, td {
+            border: 1px solid #bdc3c7; /* Lighter borders for subtle contrast */
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            font-size: 16px;
+        }
+        th {
+            background-color: #2c3e50; /* Dark background for headers */
+            color: #fff; /* White text for header */
+        }
+        td {
+            color: #555;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #7f8c8d; /* Lighter color for the footer text */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>Prescription</h1>
+        <p>Issued by: {{ prescription_obj.doctor }}</p>
+        <p>Date: {{ prescription_obj.created_at|date:"F j, Y" }}</p>
+    </div>
+
+    <div class="doctor-info">
+        <div>
+            <p><strong>Doctor's Name:</strong> {{ prescription_obj.doctor }}</p>
+            <p><strong>Specialization:</strong> General Medicine</p>
+        </div>
+        <div>
+            <p><strong>Hospital:</strong> Mico</p>
+        </div>
+    </div>
+
+    <div class="patient-info">
+        <div>
+            <p><strong>Patient Name:</strong> {{ prescription_obj.patient_name }}</p>
+            <p><strong>Date of Birth:</strong> {{ prescription_obj.patient_dob|date:"F j, Y" }}</p>
+            <p><strong>Gender:</strong> {{ prescription_obj.patient_gender }}</p>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Field</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Diagnosis</strong></td>
+                <td>{{ prescription_obj.diagnosis }}</td>
+            </tr>
+            <tr>
+                <td><strong>Medicines</strong></td>
+                <td>
+                    {% for medicine in prescription_obj.medicines %}
+                        {{ medicine.medicine_name }} - {{ medicine.dosage }}, {{ medicine.frequency }} <br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Tests to Conduct</strong></td>
+                <td>{{ prescription_obj.tests_to_conduct }}</td>
+            </tr>
+            <tr>
+                <td><strong>Additional Instructions</strong></td>
+                <td>{{ prescription_obj.additional_instructions }}</td>
+            </tr>
+            <tr>
+                <td><strong>Follow-Up Date</strong></td>
+                <td>{{ prescription_obj.follow_up_date|date:"F j, Y" }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <footer>
+        <p>For inquiries, please contact us at: contact@hospital.com or 123-456-7890.</p>
+    </footer>
+</div>
+
+</body>
+</html>

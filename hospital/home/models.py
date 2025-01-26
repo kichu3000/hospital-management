@@ -74,7 +74,7 @@ class appointment(models.Model):
     email = models.EmailField()
     phone = models.CharField(max_length=15)
     Symptoms = models.TextField()
-    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='completed')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='upcoming')
 
     def __str__(self):
         return f'{self.patient_name} - {self.doctor_name} on {self.date} and {self.email}'
@@ -83,11 +83,14 @@ class appointment(models.Model):
 
 class Prescription(models.Model):
     # Doctor and Patient Info
+    appointment = models.OneToOneField(appointment, on_delete=models.CASCADE,null=True, blank=True)
     doctor = models.CharField(max_length=100)
     patient_name = models.CharField(max_length=100)
     patient_dob = models.DateField(null=True, blank=True)  # Patient Date of Birth
     patient_gender = models.CharField(max_length=10, choices=(("Male", "Male"), ("Female", "Female"), ("Other", "Other")), blank=True)
     symptoms = models.TextField(null=True, blank=True)
+    status = models.CharField(max_length=20, default='Pending')
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     # Prescription Details
     diagnosis = models.TextField()
