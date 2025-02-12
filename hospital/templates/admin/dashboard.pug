@@ -1,0 +1,331 @@
+extends layout
+
+append links
+	link(rel='stylesheet' href=assetsDirectory + '/css/pages/dashboard.css')
+	link(rel='stylesheet' href=assetsDirectory + '/css/vendors/Chart.min.css')
+	script(src=assetsDirectory + '/js/vendors/Chart.bundle.min.js')
+	script(src=assetsDirectory + '/js/dashboard.js')
+
+block content
+	.section
+		.row
+			.col-md-6
+				h5.page-title
+	.section.welcome-section
+		.section-content
+			.card-deck
+				.card.welcome-content-card
+					.card-body
+						.row
+							.col-md-6.welcome-text-wrapper.align-self-center
+								h5 hello, dr. john doe
+								p Welcome to your dashboard
+							.col-md-6.welcome-img-wrapper
+								img(src='../SiteAssets/images/hello.svg')
+				.card.app-stats-card
+					.card-body
+						.row.text-center
+							.col-md-4
+								i.las.la-user-injured.la-3x.align-self-center
+								p total patients
+								h4
+									a(href='') 2,301
+							.col-md-4
+								i.las.la-user-md.la-3x.align-self-center
+								p total doctors
+								h4
+									a(href='') 401
+							.col-md-4
+								i.las.la-clinic-medical.la-3x.align-self-center
+								p total clinics
+								h4
+									a(href='') 21
+	.section.functionality-section
+		.section-content
+			.card-deck
+				a(href='').card.text-center
+					.card-title
+						.icon-wrapper
+							i.las.la-clinic-medical
+					.card-body
+						p add a clinic
+				a(href='').card.text-center
+					.card-title
+						.icon-wrapper
+							i.las.la-user-md
+					.card-body
+						p add a specialist
+				a(href='').card.text-center
+					.card-title
+						.icon-wrapper
+							i.las.la-user-plus
+					.card-body
+						p add a user
+				a(href='').card.text-center
+					.card-title
+						.icon-wrapper
+							i.las.la-user-lock
+					.card-body
+						p add an admin
+				a(href='').card.text-center
+					.card-title
+						.icon-wrapper
+							i.las.la-plus-circle
+					.card-body
+						p add a staff
+	.section.card-summaries
+		.section-content
+			.card-deck
+				.card
+					.card-header
+						h5 recent activities
+					.card-body
+						canvas#recent-activity-chart
+				.card
+					.card-header
+						h5 total bookings
+					.card-body
+						canvas#bookings-chart
+				.card
+					.card-header
+						h5 diseases summary
+					.card-body
+						canvas#diseases-chart
+			.card-deck
+				.card
+					.card-header
+						h5 top treatments
+					.card-body
+						ol(type='1')
+							li consultation
+							li scaling
+							li root canal
+							li bleaching
+							li transplants
+							li cesarean
+							li x-rays
+					.card-footer
+						a(href='').view-more
+							| more
+							i.las.la-angle-right
+				.card.total-counts-summary
+					.card-header
+						h5 total counts
+					.card-body
+						.row.text-center.text-capitalize
+							.col-md-6
+								i.las.la-users.la-2x.mb-1
+								h4.mb-1 100
+								p total users
+							.col-md-6
+								i.las.la-user-md.la-2x.mb-1
+								h4.mb-1 12
+								p total doctors
+							.col-md-6
+								i.las.la-user-injured.la-2x.mb-1
+								h4.mb-1 3210
+								p total patients
+							.col-md-6
+								i.las.la-hospital.la-2x.mb-1
+								h4.mb-1 40
+								p total clinics
+					.card-footer
+						a(href='').view-more
+							| more
+							i.las.la-angle-right
+				.card
+					.card-header
+						h5 recent patients
+					.card-body
+						table.table.table-hover.table-responsive-md.table-borderless
+							tbody
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+					.card-footer
+						a(href='').view-more
+							| more
+							i.las.la-angle-right
+			.card-deck
+				.card
+					.card-header
+						h5 doctors lists
+					.card-body
+						table.table.table-borderless.table-hover.table-responsive-md
+							tbody
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p +271289178
+									td.text-right
+										button.btn.btn-dark-red-f.btn-sm appointment
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p +271289178
+									td.text-right
+										button.btn.btn-dark-red-f.btn-sm appointment
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p +271289178
+									td.text-right
+										button.btn.btn-dark-red-f.btn-sm appointment
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p +271289178
+									td.text-right
+										button.btn.btn-dark-red-f.btn-sm appointment
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+					.card-footer
+						a(href='').view-more
+							| more
+							i.las.la-angle-right
+				.card
+					.card-header
+						h5 upcoming appointments
+					.card-body
+						table.table.table-borderless.table-hover.table-responsive-md
+							tbody
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p 24y
+									td.text-right
+										button.btn
+											i.las.la-check-circle
+										button.btn
+											i.las.la-times-circle
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p 24y
+									td.text-right
+										button.btn
+											i.las.la-check-circle
+										button.btn
+											i.las.la-times-circle
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p 24y
+									td.text-right
+										button.btn
+											i.las.la-check-circle
+										button.btn
+											i.las.la-times-circle
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+								tr
+									td
+										img.rounded-circle(src=assetsDirectory + '/images/man.svg' loading='lazy')
+									td
+										p john doe
+										small.text-muted dentist
+									td
+										p.text-muted male
+									td.text-right
+										p 24y
+									td.text-right
+										button.btn
+											i.las.la-check-circle
+										button.btn
+											i.las.la-times-circle
+									td
+										button.btn.btn-sm
+											i.las.la-ellipsis-h
+					.card-footer
+						a(href='').view-more
+							| more
+							i.las.la-angle-right

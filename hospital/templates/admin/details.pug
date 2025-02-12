@@ -1,0 +1,224 @@
+extends layout
+
+append links
+	link(rel='stylesheet' href=assetsDirectory+'/css/pages/details.css')
+
+block content
+	.section.row.title-section
+		.col-md-8
+			nav(aria-label='breadcrumb')
+				ol.breadcrumb
+					li.breadcrumb-item
+						a(href='patients.html') patients
+					li.breadcrumb-item.active(aria-current='page') john doe
+		.col-md-4
+			button.btn.btn-dark-red-f-gr
+				i.las.la-edit
+				| edit patient
+	.section.patient-details-section
+		.row
+			.col-md-8
+				.row
+					.col-sm-12
+						.card
+							.row
+								.col-md-4
+									.mini-card.text-center
+										.card-header
+											img.rounded-circle(src='https://placebeard.it/640x360' loading='lazy')
+										.card-body
+											h4 john doe
+											small.text-muted johndoe@abc.com
+											h5 age
+											p 26
+										.card-footer
+											button.btn.btn-dark-red-f
+												i.las.la-sms
+												| send message
+								.col-md-8.patients-details-card-wrapper
+									.mini-card
+										.card-body
+											.row
+												.col-md-4
+													.form-group
+														label gender
+														input.form-control(readonly value="male")
+												.col-md-4
+													.form-group
+														label date of birth
+														input.form-control(readonly value="27/10/1986")
+												.col-md-4
+													.form-group
+														label phone number
+														input.form-control(readonly value="(254) 727 4432")
+												.col-md-4
+													.form-group
+														label address
+														input.form-control(readonly value="75th, xy avenue")
+												.col-md-4
+													.form-group
+														label city
+														input.form-control(readonly value="new york")
+												.col-md-4
+													.form-group
+														label zip code
+														input.form-control(readonly value="21332")
+												.col-md-4
+													.form-group
+														label member status
+														input.form-control(readonly value="active")
+												.col-md-4
+													.form-group
+														label registered date
+														input.form-control(readonly value="21/02/2018")
+					.col-sm-12
+						.card
+							.card-body
+								ul#myTab.nav.nav-tabs(role='tablist')
+									li.nav-item(role='presentation')
+										a#upcoming-appointments-tab.nav-link.active(data-toggle='tab', href='#upcoming-appointments', role='tab', aria-controls='upcoming-appointments', aria-selected='true') upcoming appointments
+									li.nav-item(role='presentation')
+										a#past-appointments-tab.nav-link(data-toggle='tab', href='#past-appointments', role='tab', aria-controls='past-appointments', aria-selected='false') past appointments
+									li.nav-item(role='presentation')
+										a#medical-records-tab.nav-link(data-toggle='tab', href='#medical-records', role='tab', aria-controls='medical-records', aria-selected='false') medical records
+								#myTabContent.tab-content
+									#upcoming-appointments.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='upcoming-appointments-tab')
+										.section-title
+											button.btn.btn-dark-red-f.btn-sm
+												i.las.la-calendar-plus
+												| create an appointment
+										.media
+											.align-self-center
+												p tue
+												h3 05
+												p 2020
+											.media-body
+												.row
+													label.label-green-bl consultation
+													p with Dr. Jekyll
+													p
+														i.las.la-tv
+														| on zoom
+													p
+														i.las.la-clock
+														| 10.30 - 11.00
+													label.label-cream.label-sm
+														i.las.la-hourglass-half
+														| 30 min
+													a(href='')
+														i.las.la-ellipsis-v
+												.row
+													label.label-blue-bl root canal
+													p with Dr. Jekyll
+													p
+														i.las.la-tv
+														| on zoom
+													p
+														i.las.la-clock
+														| 13.30 - 14.15
+													label.label-cream.label-sm
+														i.las.la-hourglass-half
+														| 45 min
+													a(href='')
+														i.las.la-ellipsis-v
+										.media
+											.align-self-center.mr-3
+												p wed
+												h3 06
+												p 2020
+											.media-body
+												.row
+													label.label-orange-bl consultation
+													p with Dr. Jekyll
+													p
+														i.las.la-tv
+														| on zoom
+													p
+														i.las.la-clock
+														| 10.30 - 11.00
+													label.label-cream.label-sm
+														i.las.la-hourglass-half
+														| 30 min
+													a(href='')
+														i.las.la-ellipsis-v
+												.row
+													label.label-pink-bl root canal
+													p with Dr. Jekyll
+													p
+														i.las.la-tv
+														| on zoom
+													p
+														i.las.la-clock
+														| 13.30 - 14.15
+													label.label-cream.label-sm
+														i.las.la-hourglass-half
+														| 45 min
+													a(href='')
+														i.las.la-ellipsis-v
+									#past-appointments.tab-pane.fade(role='tabpanel', aria-labelledby='past-appointments-tab') ...
+									#medical-records.tab-pane.fade(role='tabpanel', aria-labelledby='medical-records-tab') ...
+			.col-md-4
+				.card.notes-card
+					.card-header
+						h5 notes
+							button.btn.btn-dark-red-f.btn-sm see all
+					.card-body
+						textarea.form-control(placeholder='you can write patient notes over here' rows='6')
+						button.btn.btn-dark-red-f.float-right.btn-sm
+							i.las.la-save
+							| save note
+					.card-footer
+						.float-left
+							p
+								i.las.la-user
+								| dr. jekyll
+						.float-right
+							p 04, may, 2020
+				.card.files-card
+					.card-header
+						h5 files
+							button.btn.btn-dark-red-f.btn-sm
+								i.las.la-file-medical
+								| add file
+					.card-body
+						.list-group.list-group-flush
+							a(href="#").list-group-item
+								i.las.la-file-excel
+								| check up results.csv
+								.float-right
+									small.text-muted 123kb
+									.action-buttons.no-display
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-trash
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-download
+							a(href="#").list-group-item
+								i.las.la-file-excel
+								| dental prescriptions.csv
+								.float-right
+									small.text-muted 3.5mb
+									.action-buttons.no-display
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-trash
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-download
+							a(href="#").list-group-item
+								i.las.la-file-pdf
+								| x-ray.pdf
+								.float-right
+									small.text-muted 2.1mb
+									.action-buttons.no-display
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-trash
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-download
+							a(href="#").list-group-item
+								i.las.la-file-word
+								| consultancy-report.word
+								.float-right
+									small.text-muted 2mb
+									.action-buttons.no-display
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-trash
+										button.btn.btn-sm.btn-dark-red-f
+											i.las.la-download
