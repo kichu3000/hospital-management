@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from . forms import SignUpForm
 from django.contrib import messages  # For user feedback
 from django.db import IntegrityError  # For database errors
+from django.contrib.auth.models import User
+from django.urls import reverse
 
 from django.contrib.auth import  login,logout
 from .models import User, appointment, Prescription
@@ -9,6 +11,9 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from datetime import datetime
+from django.core.exceptions import ObjectDoesNotExist
+from django.template.loader import render_to_string
+from weasyprint import HTML
 # Create your views here.
 # def home(request):
 #     return render(request,'home.html')
@@ -175,7 +180,7 @@ def login_view(request):
 
                 return redirect('user_dashboard')  # Ensure this matches the name in urls.py
             else:
-                return redirect('admin_dashboard')  # Ensure this matches the name in urls.py
+                return redirect(reverse('my_admin:admin_dashboard'))  # Ensure this matches the name in urls.py
 
         else:
             messages.error(request, "Invalid email or password. Please try again.")
@@ -461,14 +466,6 @@ def store_prescription(request):
     return redirect('doctor_dashboard')
 
 
-
-
-
-from io import BytesIO
-from django.http import HttpResponse
-from django.template.loader import render_to_string
-from weasyprint import HTML
-from django.core.exceptions import ObjectDoesNotExist
 
 
 def download_prescription(request):

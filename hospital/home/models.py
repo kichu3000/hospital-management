@@ -22,6 +22,7 @@ class User(AbstractBaseUser):
     USER_TYPE_CHOICES = [
         ('patient', 'Patient'),
         ('doctor', 'Doctor'),
+        ('admin', 'Admin')
     ]
     GENDER = [
         ('male','Male'),
