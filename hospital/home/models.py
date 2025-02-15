@@ -42,6 +42,7 @@ class User(AbstractBaseUser):
     address = models.CharField(max_length=100, default='Unknown')
     gender = models.CharField(max_length=10, choices=GENDER, default='Unknown')
     date_of_birth = models.DateField(null=True, blank=True,default='1000-01-01')  # Allow null and blank values
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     # Custom manager
     objects = UserManager()

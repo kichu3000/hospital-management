@@ -309,7 +309,9 @@ def logout(request):
 def cancel_appointment(request):
     if request.method == 'POST':
         appointment_id = request.POST.get('appointment_id')
-        print("Appointment ID:", appointment_id)
+        user_type = request.POST.get('cancel_type')
+        # print("User Type:------------", user_type)
+        # print("Appointment ID:", appointment_id)
         try:
             appointment_cancel = appointment.objects.get(id=appointment_id)
             print("Appointment found:", appointment_cancel)
@@ -317,7 +319,10 @@ def cancel_appointment(request):
             messages.success(request, "Appointment cancelled successfully.")
         except appointment.DoesNotExist:
             messages.error(request, "Appointment not found.")
-    return redirect('user_dashboard')  # Redirect to the user dashboard after cancellation
+        if user_type == 'admin':
+            return redirect(reverse('my_admin:admin_dashboard'))
+        else:
+            return redirect('user_dashboard')  # Redirect to the user dashboard after cancellation
     
 
 
