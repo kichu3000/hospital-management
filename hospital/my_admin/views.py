@@ -27,7 +27,7 @@ def admin_dashboard(request):
         'doctors' : doctors,
         'appoinments' : appointments
     }
-    print(appointments)
+    # print(appointments)
     return render(request,'admin/dashboard.html',content)
 
 
@@ -63,3 +63,10 @@ def patient_add(request):
             print(f"Validation error: {e}")
 
     return render(request, 'admin/patient_add.html')
+
+
+
+
+def patient_list(request):
+    patients = get_patient(request)
+    return render(request,'admin/patients_list.html',{'patients':patients})

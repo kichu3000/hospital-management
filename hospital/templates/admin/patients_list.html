@@ -1,0 +1,123 @@
+{% load static %}
+
+<html>
+
+<head>
+    <title>Admin</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{% static 'admin/css/vendors/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'admin/css/vendors/line-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'admin/css/pages/layout.css' %}" />
+    <link rel="icon" href="{% static 'images/logo.png'%}" />
+    <script src="{% static 'admin/js/vendors/jquery.min.js' %}"></script>
+    <script src="{% static 'admin/js/vendors/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'admin/js/global.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'admin/css/pages/dashboard.css' %}" />
+    <link rel="stylesheet" href="{% static 'admin/css/vendors/Chart.min.css' %}" />
+    <script src="{% static 'admin/js/vendors/Chart.bundle.min.js' %}"></script>
+    <script src="{% static 'admin/js/dashboard.js' %}"></script>
+</head>
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg shadow-sm fixed-top">
+            <a class="navbar-brand" href="">
+                <img src="{% static 'images/logo.png'%}" />
+                <span>Admin</span>
+            </a>
+        </nav>
+    </header>
+    <main>
+        <div class="side-nav" style="width: 290;">
+            <ul class="list-group list-group-flush">
+                <a class="list-group-item" href="" data-toggle="tooltip" data-placement="bottom" title="Dashboard" style="width: 280;">
+                    <i class="las la-shapes la-lw"></i>
+                    <span>dashboard</span>
+                </a>
+                <a class="list-group-item" href="{% url 'my_admin:patient_list' %}" data-toggle="tooltip" data-placement="bottom" title="Patients" style="width: 280;">
+                    <i class="las la-user-injured la-lw"></i>
+                    <span>patients</span>
+                </a>
+                <a class="list-group-item" href="" data-toggle="tooltip" data-placement="bottom" title="Specialists" style="width: 280;">
+                    <i class="las la-clinic-medical la-lw"></i>
+                    <span>specialists</span>
+                </a>
+                <a class="list-group-item" href="" data-toggle="tooltip" data-placement="bottom" title="Procurement" style="width: 280;">
+                    <i class="las la-shopping-cart la-lw"></i>
+                    <span>procurement</span>
+                </a>
+                <hr class="divider" />
+                <div class="aob-items">
+                    <div class="card">
+                        <div class="card-header">
+                            <img src="{% static 'admin/images/population.png' %}" />
+                        </div>
+                        <div class="card-body">
+                            <p><u><i class="las la-baby"></i> Global Births & Deaths</u></p>
+                            <p>Births Today - <u id="births-count">Loading...</u></p>
+                            <p>Deaths Today - <u id="deaths-count">Loading...</u></p>
+                            <p>Total Population - <u id="population-count">Loading...</u></p>
+                        </div>
+                        <div class="card-footer">
+                            <a class="btn btn-dark-red-f-gr btn-sm" href="https://www.worldometers.info/" target="_blank">
+                                View Worldometers data
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="section">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h5 class="page-title">Patients List</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover table-bordered">
+                                    <thead class="table-danger">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Blood Group</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for patient in patients %}
+                                        <tr>
+                                            <td>{{ patient.name }}</td>
+                                            <td>{{ patient.email }}</td>
+                                            <td>{{ patient.phone }}</td>
+                                            <td>{{ patient.blood_group }}</td>
+                                            <td>
+                                                <a href="" class="btn btn-sm btn-primary">Edit</a>
+
+                                                <form action="{% url 'delete_account' %}" method="post" style="display:inline;">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="user_email" value="{{ patient.email }}" />
+                                                    <input type="hidden" name="user_type" value="admin" />
+                                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                                </form>
+
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">No patients found</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+</html>

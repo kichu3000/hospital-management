@@ -275,18 +275,29 @@ def update_profile(request):
 
 def delete_account(request):
     # Retrieve the logged-in user's email from the session
-    user_email = request.session.get('user_email')
+    user_email = request.session.get('user_email') 
+    if request.method == 'POST':
+        user_email = request.POST.get('user_email')
+        user_type = request.POST.get('user_type')
 
+    
 
-    if not user_email:
+    if user_type != 'admin' and not user_email:
         # If no user_email in session, redirect to login
         messages.error(request, "You need to log in to delete your account.")
         return redirect('login')
-
+    
+    
     try:
         # Find the user by email
+        print("User Email:---------------------------------", user_email)
+        print("User Type:=----------------------------------", user_type)
+
         user = User.objects.get(email=user_email)
-        user_appointment = appointment.objects.get(email = user_email)
+        user_appointment = appointment.objects.filter(email=user_email)
+        if user_appointment.exists():
+            user_appointment.delete()
+
     except User.DoesNotExist:
         # If the user doesn't exist, clear the session and redirect to login
         messages.error(request, "Account not found.")
@@ -294,11 +305,13 @@ def delete_account(request):
         return redirect('login')
 
     # Directly delete the user account
-    user_appointment.delete()
     user.delete()
     request.session.flush()  # Clear session after account deletion
     messages.success(request, "Your account has been deleted successfully.")
-    return redirect('login')  # Redirect to login after deletion
+    if user_type == 'admin':
+        return redirect(reverse('my_admin:patient_list'))
+    else:
+        return redirect('login')  # Redirect to login after deletion
 
 
 def logout(request):
